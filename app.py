@@ -37,6 +37,21 @@ def oak():
     <body>
         <h1>Дуб</h1>
         <img src="''' + path + '''">
+    </body>
+</html>
+'''
+
+count = 0
+
+@app.route('/lab1/counter')
+def counter():
+    global count
+    count += 1
+    return '''
+<!doctype html>
+<html>
     <body>
+        Сколько раз вы сюда заходили: ''' + str(count) + '''
+    </body>
 </html>
 '''
