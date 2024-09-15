@@ -94,3 +94,28 @@ def created():
 @app.errorhandler(404)
 def not_found(err):
     return "нет такой страницы", 404
+
+@app.route("/")
+@app.route("/index")
+def main():
+    style = url_for("static", filename = "style.css")
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>НГТУ, ФБ, Лабораторные работы</title>  
+    </head>
+    <body>
+        <header>
+            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
+            <link rel="stylesheet" type="text/css" href="''' + style + '''">
+        </header>
+        <main>
+            <a href = "/lab1">Первая лабораторная</a>
+        </main>
+        <footer>
+            &copy; Нина Демченко, ФБИ-22, 3 курс, 2024
+        </footer>
+    </body>
+</html>
+'''
