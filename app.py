@@ -58,7 +58,20 @@ def counter():
 <!doctype html>
 <html>
     <body>
-        Сколько раз вы сюда заходили: ''' + str(count) + '''
+        Сколько раз вы сюда заходили: ''' + str(count) + '''<br>
+        <a href = "/lab1/reset">Очистить счетчик</a>
+    </body>
+</html>
+'''
+@app.route("/lab1/reset")
+def reset_counter():
+    global count
+    count = 0
+    return '''
+<!doctype html>
+<html>
+    <body>
+        <a href = "/lab1/counter">Возобновить счетчик</a>
     </body>
 </html>
 '''
