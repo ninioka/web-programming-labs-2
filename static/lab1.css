@@ -1,0 +1,13 @@
+img {
+    height: 520px;
+    border-radius: 50px;
+    border-radius: 50px;
+    margin: auto;
+    border: 5px solid;
+    border-color: saddlebrown;
+}
+body {
+    background-color: bisque;
+    color: saddlebrown;
+    text-align: center;
+}
