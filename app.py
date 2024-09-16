@@ -257,29 +257,29 @@ def text():
     return '''
 <!doctype html>
 <html>
-<head>
-    <style>
-        h1, h2 {
-            text-align: center;
-            margin: 5px;
-        }
-        div {
-            text-align: justify;
-            font-size: 18pt;
-            line-height: 1.25;
-            text-indent: 50px;
-            margin: 15px;
-        }
-        body {
-            background-color: rgb(122,89,61);
-            text-align: center;
-        }
-        img {
-            width: 70%;
-            margin: auto;
-        }
-    </style>
-</head>
+    <head>
+        <style>
+            h1, h2 {
+                text-align: center;
+                margin: 5px;
+            }
+            div {
+                text-align: justify;
+                font-size: 18pt;
+                line-height: 1.25;
+                text-indent: 50px;
+                margin: 15px;
+            }
+            body {
+                background-color: rgb(122,89,61);
+                text-align: center;
+            }
+            img {
+                width: 70%;
+                margin: auto;
+            }
+        </style>
+    </head>
     <body>
         <h2>Джордж Мартин</h2>        
         <h1>Игра престолов. Часть I</h1>
@@ -315,3 +315,119 @@ def text():
     'X-Jon Snow': ' Lord Commander of the Nights Watch',
     'Content-Language': 'ru-RU'
     }
+
+tree_planted = False
+
+@app.route('/lab1/source')
+def tree_status():
+    style = url_for("static", filename="style2.css")
+    path = url_for("static", filename="Дерево.jpg")
+    global tree_planted
+    status = "Дерево посажено" if tree_planted else "Дерево еще не посажено"
+    response = f'''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{style}">
+    </head>
+    <body>
+        <h1>{status}</h1>
+        <a href="/lab1/create">Посадить дерево</a><br>
+        <a href="/lab1/delete">Полить дерево</a><br>
+        <img src="'''+ path +'''">
+    </body>
+</html>
+'''
+    return response, 200
+
+@app.route('/lab1/create')
+def plant_tree():
+    style = url_for("static", filename="style2.css")
+    path = url_for("static", filename="Посажено400.jpg")
+    path1 = url_for("static", filename="Посажено201.jpeg")
+    global tree_planted
+    if tree_planted:
+        return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + style + '''">
+        <style>
+            img {
+                width: 65%;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Сначала полейте то, что посадили!</p>
+        <a href="/lab1/source">Назад</a><br>
+        <img src="'''+ path +'''">
+    </body>
+</html>
+''', 400
+    else:
+        tree_planted = True
+        return '''
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    <style>
+        img {
+            width: 60%;
+        }
+    </style>
+</head>
+    <body>
+        <p>Ура! Дерево посажено, будем ухаживать :).</p>
+        <a href="/lab1/source">Назад</a><br>
+        <img src="'''+ path1 +'''">
+    </body>
+</html>
+''', 201
+
+@app.route('/lab1/delete')
+def remove_tree():
+    style = url_for("static", filename="style2.css")
+    path = url_for("static", filename="Полито200.webp")
+    path1 = url_for("static", filename="Полито400.webp")
+    global tree_planted    
+    if tree_planted:
+        tree_planted = False
+        return '''
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    <style>
+        img {
+            width: 60%;
+        }
+    </style>
+</head>
+    <body>
+        <p>Дерево полито, можно сажать новое!</p>
+        <a href="/lab1/source">Назад</a><br>
+        <img src="'''+ path +'''"><br>
+    </body>
+</html>
+''', 200
+    else:
+        return '''
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    <style>
+        img {
+            width: 60%;
+        }
+    </style>
+</head>
+    <body>
+        <p>Не надо переливать его!!! Посадите лучше новое.</p>
+        <a href="/lab1/source">Назад</a><br>
+        <img src="'''+ path1 +'''"><br>
+    </body>
+</html>
+''', 400
