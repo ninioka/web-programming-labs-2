@@ -198,3 +198,38 @@ def method_not_allowed():
 @app.route("/lab1/i_am_a_teapot")
 def i_am_a_teapot():
     return "I am a teapot. Сервер отказался варить кофе, потому что он чайник.", 418
+
+
+
+@app.route('/internal_server_error')
+def internal_server_error():
+    error = "Ошибка!" + 15
+    return 'Результат: ' + str(error)
+
+@app.errorhandler(500)
+def interceptor(err):
+    return '''
+<!doctype html>
+<head>
+    <style>
+        body {
+            font-family: 'Pacifico', cursive;
+            background-color: #c5bdbd;
+            margin-top: 250px;
+            text-align: center;
+            font-size: 25px;
+        }
+        h1 {
+            color: #b3725c;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #797575;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ошибка сервера.</h1>
+    <p>На сервере произошла ошибка. Можете не ждать, она исправлена не будет. ИЗВИНИТЕ!</p>
+</body>
+</html>''', 500
