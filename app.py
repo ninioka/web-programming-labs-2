@@ -150,3 +150,27 @@ def lab1():
     </body>
 </html>
 '''
+
+@app.route("/lab1/bad_request")
+def bad_request():
+    return "400 Bad Request. Неправильный запрос.", 400
+
+@app.route("/lab1/unauthorized")
+def unauthorized():
+    return "401 Unauthorized. Для доступа требуется аутентификация.", 401
+
+@app.route("/lab1/payment_required")
+def payment_required():
+    return "402 Payment Required. Для доступа необходимо совершить платёж.", 402
+
+@app.route("/lab1/forbidden")
+def forbidden():
+    return "403 Forbidden. В доступе на данную страницу отказано.", 403
+
+@app.route("/lab1/method_not_allowed")
+def method_not_allowed():
+    return "405 Method Not Allowed. Указанный метод нельзя применить к текущему ресурсу.", 405
+
+@app.route("/lab1/i_am_a_teapot")
+def i_am_a_teapot():
+    return "I am a teapot. Сервер отказался варить кофе, потому что он чайник.", 418
