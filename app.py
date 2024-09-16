@@ -26,7 +26,7 @@ def author():
                 <p>Студент: """ + name + """</p>
                 <p>Группа: """ + group + """</p>
                 <p>Факультет: """ + faculty + """</p>
-                <a href="/lab1/web">web</a>
+                <a href="/lab1/web">Web</a>
             </body>
         </html>"""
 
@@ -77,7 +77,7 @@ def reset_counter():
 
 @app.route("/lab1/info")
 def info():
-    return redirect("/author")
+    return redirect("/lab1/author")
 
 @app.route("/lab1/created")
 def created():
@@ -167,6 +167,23 @@ def lab1():
                 веб-приложений, сознательно предоставляющих лишь самые базовые возможности.<br>
             </div>
             <a href = '/'>Главная страница</a>
+            <h2>Список роутов</h2>
+            <a href="/lab1/web">Web</a><br>
+            <a href="/lab1/author">Author</a><br>
+            <a href="/lab1/oak">Oak</a><br>
+            <a href="/lab1/counter">Counter</a><br>
+            <a href="/lab1/reset">Reset</a><br>
+            <a href="/lab1/info">Info</a><br>
+            <a href="/lab1/created">Created</a><br>
+            <a href="/404">Ошибка 404</a><br>
+            <a href="/lab1/bad_request">Bad request</a><br>
+            <a href="/lab1/unauthorized">Unauthorized</a><br>
+            <a href="/lab1/payment_required">Payment required</a><br>
+            <a href="/lab1/forbidden">Forbidden</a><br>
+            <a href="/lab1/method_not_allowed">Method not allowed</a><br>
+            <a href="/lab1/i_am_a_teapot">I am a teapot</a><br>
+            <a href="/lab1/internal_server_error">Internal server error</a><br>
+            <a href="/lab1/text">Text</a><br>
         </main>
         <footer>
             &copy; Нина Демченко, ФБИ-22, 3 курс, 2024
@@ -201,7 +218,7 @@ def i_am_a_teapot():
 
 
 
-@app.route('/internal_server_error')
+@app.route('/lab1/internal_server_error')
 def internal_server_error():
     error = "Ошибка!" + 15
     return 'Результат: ' + str(error)
