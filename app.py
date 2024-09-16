@@ -93,7 +93,31 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return "нет такой страницы", 404
+    path = url_for("static", filename="404.jpg")
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <style>
+            img {
+                width: 70%;
+                margin-top: 3px;
+            }
+            body {
+                text-align: center;
+                color: rgb(124,166,216);
+                background-color: rgb(219,201,191);
+                font-size: 26pt;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Ой... Мы не можем найти эту страницу :(<br>Попробуйте позже!</p><br>
+        <img src="'''+ path +'''"><br>
+    </body>
+</html>
+''', 404
 
 @app.route("/")
 @app.route("/index")
