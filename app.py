@@ -135,7 +135,9 @@ def main():
             <link rel="stylesheet" type="text/css" href="''' + style + '''">
         </header>
         <main>
-            <a href = "/lab1">Первая лабораторная</a>
+            <ul>
+                <li><a href = "/lab1">Первая лабораторная</a></li>
+            </ul>
         </main>
         <footer>
             &copy; Нина Демченко, ФБИ-22, 3 курс, 2024
@@ -151,7 +153,27 @@ def lab1():
 <!doctype html>
 <html>
     <head>
-        <title>Лабораторная 1</title>  
+        <title>Лабораторная 1</title>
+        <style>
+            div {
+                text-align: justify;
+                font-size: 18pt;
+                line-height: 1.25;
+                text-indent: 50px;
+                margin: 15px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            h2 {
+                text-align: justify;
+                font-size: 18pt;
+                margin: 15px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            li {
+                font-size: 16pt;
+                margin-left: 15px;  
+            }
+        </style>  
     </head>
     <body>
         <header>
@@ -166,24 +188,29 @@ def lab1():
                 называемых микрофреймворков — минималистичных каркасов 
                 веб-приложений, сознательно предоставляющих лишь самые базовые возможности.<br>
             </div>
-            <a href = '/'>Главная страница</a>
-            <h2>Список роутов</h2>
-            <a href="/lab1/web">Web</a><br>
-            <a href="/lab1/author">Author</a><br>
-            <a href="/lab1/oak">Oak</a><br>
-            <a href="/lab1/counter">Counter</a><br>
-            <a href="/lab1/reset">Reset</a><br>
-            <a href="/lab1/info">Info</a><br>
-            <a href="/lab1/created">Created</a><br>
-            <a href="/404">Ошибка 404</a><br>
-            <a href="/lab1/bad_request">Bad request</a><br>
-            <a href="/lab1/unauthorized">Unauthorized</a><br>
-            <a href="/lab1/payment_required">Payment required</a><br>
-            <a href="/lab1/forbidden">Forbidden</a><br>
-            <a href="/lab1/method_not_allowed">Method not allowed</a><br>
-            <a href="/lab1/i_am_a_teapot">I am a teapot</a><br>
-            <a href="/lab1/internal_server_error">Internal server error</a><br>
-            <a href="/lab1/text">Text</a><br>
+            <ul>
+            <li><a href = '/'>Главная страница</a></li>
+            </ul>
+            <h2>Список роутов:</h2>
+            <ul>
+                <li><a href="/lab1/web">Web</a><br></li>
+                <li><a href="/lab1/author">Author</a><br></li>
+                <li><a href="/lab1/oak">Oak</a><br></li>
+                <li><a href="/lab1/counter">Counter</a><br></li>
+                <li><a href="/lab1/reset">Reset</a><br></li>
+                <li><a href="/lab1/info">Info</a><br></li>
+                <li><a href="/lab1/created">Created</a><br></li>
+                <li><a href="/404">Ошибка 404</a><br></li>
+                <li><a href="/lab1/bad_request">Ошибка 400. Bad request</a><br></li>
+                <li><a href="/lab1/unauthorized">Ошибка 401. Unauthorized</a><br></li>
+                <li><a href="/lab1/payment_required">Ошибка 402. Payment required</a><br></li>
+                <li><a href="/lab1/forbidden">Ошибка 403. Forbidden</a><br></li>
+                <li><a href="/lab1/method_not_allowed">Ошибка 405. Method not allowed</a><br></li>
+                <li><a href="/lab1/i_am_a_teapot">Ошибка 418. I am a teapot</a><br></li>
+                <li><a href="/lab1/internal_server_error">Ошибка 500. Internal server error</a><br></li>
+                <li><a href="/lab1/text">Text</a><br></li>
+                <li><a href="/lab1/source">Tree</a></li>
+            </ul>
         </main>
         <footer>
             &copy; Нина Демченко, ФБИ-22, 3 курс, 2024
@@ -379,7 +406,7 @@ def plant_tree():
     </style>
 </head>
     <body>
-        <p>Ура! Дерево посажено, будем ухаживать :).</p>
+        <p>Ура! Дерево посажено, будем ухаживать :)</p>
         <a href="/lab1/source">Назад</a><br>
         <img src="'''+ path1 +'''">
     </body>
