@@ -351,21 +351,20 @@ def tree_status():
     path = url_for("static", filename="Дерево.jpg")
     global tree_planted
     status = "Дерево посажено" if tree_planted else "Дерево еще не посажено"
-    response = f'''
+    return '''
 <!doctype html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="{style}">
+        <link rel="stylesheet" type="text/css" href="''' + style + '''">
     </head>
     <body>
-        <h1>{status}</h1>
+        <h1>''' + status + '''</h1>
         <a href="/lab1/create">Посадить дерево</a><br>
         <a href="/lab1/delete">Полить дерево</a><br>
         <img src="'''+ path +'''">
     </body>
 </html>
-'''
-    return response, 200
+''', 200
 
 @app.route('/lab1/create')
 def plant_tree():
