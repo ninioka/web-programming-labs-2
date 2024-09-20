@@ -457,3 +457,13 @@ def remove_tree():
     </body>
 </html>
 ''', 400
+    
+#Лабораторная работа 2
+
+@app.route('/lab2/a')
+def a():
+    return 'без слэша'
+
+@app.route('/lab2/a/')
+def a2():
+    return 'со слэшем'
