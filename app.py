@@ -472,25 +472,54 @@ flower_list = ['роза', 'тюльпан', 'незабудка', 'ромашк
 
 @app.route('/lab2/flowers/<int:flower_id>')
 def flowers(flower_id):
+    style = url_for("static", filename="main.css")  
     if flower_id >= len(flower_list):
-        return "такого цветка нет", 404
-    else:
-        return "цветок: " + flower_list[flower_id]
-    
-@app.route('/lab2/add_flower/<name>')
-def add_flower(name):
-    flower_list.append(name)
-    return f'''
+        return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    </head>
     <body>
-        <h1>Добавлен новый цветок</h1>
-        <p>Название нового цветка: {name} </p>
-        <p>Всего цветов: {len(flower_list)} </p>
-        <p>Полный список: {flower_list} </p>
+        <h1>Такого цветка нет!</h1>
+    </body>
+</html>
+''', 404
+    else:
+        flower_name = flower_list[flower_id]
+        return f'''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{style}">
+    </head>
+    <body>
+        <h1>Информация о цветке</h1>
+        <p>Цветок: {flower_name}</p>
+        <p>Номер цветка: {flower_id}</p>
+        <a href="/lab2/all_flowers/">Вернуться к списку цветов</a>
     </body>
 </html>
 '''
+    
+@app.route('/lab2/add_flower/<name>')
+def add_flower(name):
+    style = url_for("static", filename="main.css")
+    flower_list.append(name)
+    return f'''
+    <!doctype html>
+    <html>
+        <head>
+            <link rel="stylesheet" type="text/css" href="{style}">
+        </head>
+        <body>
+            <h1>Добавлен новый цветок</h1>
+            <p>Название нового цветка: {name} </p>
+            <p>Всего цветов: {len(flower_list)} </p>
+            <p>Полный список: {flower_list} </p>
+        </body>
+    </html>
+    '''
 
 @app.route('/lab2/example')
 def example():
@@ -515,3 +544,41 @@ def lab2():
 def filters():
     phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filter.html', phrase = phrase)
+
+@app.route('/lab2/add_flower/')
+def err_add_flower():
+    style = url_for("static", filename="main.css")
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    </head>
+    <body>
+        <h1>Вы не задали имя цветка!</h1>
+    </body>
+</html>
+''', 404
+
+
+@app.route('/lab2/all_flowers/')
+def all_flowers():
+    flowers = flower_list
+    flowers_num = len(flower_list)
+    return render_template('lab2_flowers.html', flower_list=flowers, flowers_num=flowers_num)
+
+@app.route('/lab2/delete_flowers/')
+def delete_flowers():
+    style = url_for("static", filename="main.css")
+    flower_list.clear()  
+    return'''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    </head>
+    <body>
+        <h1>Список цветов успешно очищен!</h1>
+        <a href="/lab2/all_flowers/">Вернуться к списку цветов</a>
+    </body>
+</html>'''
