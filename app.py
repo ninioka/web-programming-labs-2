@@ -582,3 +582,23 @@ def delete_flowers():
         <a href="/lab2/all_flowers/">Вернуться к списку цветов</a>
     </body>
 </html>'''
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    num_a = a
+    num_b = b
+    addition = a + b
+    subtraction = a - b
+    multiplication = a * b
+    division = a / b if b != 0 else "Деление на ноль"
+    power = a ** b
+    return render_template('calc.html', a=num_a, b=num_b, addition=addition, subtraction=subtraction,
+                           multiplication=multiplication, division=division, power=power)
+
+@app.route('/lab2/calc/')
+def red_calc():
+    return redirect('/lab2/calc/1/1')
+
+@app.route('/lab2/calc/<int:a>')
+def redi_calc(a):
+    return redirect(f'/lab2/calc/{a}/1')

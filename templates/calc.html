@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Математические операции</h1>
+    <p>Расчеты с параметрами {{ a }} и {{ b }}:</p>
+    <p>{{ a }}+{{ b }} = {{ addition }}</p>
+    <p>{{ a }}-{{b}} = {{ subtraction }}</p>
+    <p>{{ a }}*{{ b }} = {{ multiplication }}</p>
+    <p>{{ a }}/{{ b }} = {{ division }}</p>
+    <p>{{ a }}<sup>{{ b }}</sup> = {{ power }}</p>
+{% endblock %}
