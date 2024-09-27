@@ -602,3 +602,20 @@ def red_calc():
 @app.route('/lab2/calc/<int:a>')
 def redi_calc(a):
     return redirect(f'/lab2/calc/{a}/1')
+
+books = [
+    {"author": "Маргарет Митчелл", "title": "Унесенные ветром", "genre": "Роман", "pages": 992},
+    {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 680},
+    {"author": "Джейн Остин", "title": "Гордость и предубеждение", "genre": "Роман", "pages": 384},
+    {"author": "Олдос Хаксли", "title": "О дивный новый мир", "genre": "Антиутопия", "pages": 352},
+    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Роман-антиутопия", "pages": 320},
+    {"author": "Марк Твен", "title": "Приключения Тома Сойера", "genre": "Повесть", "pages": 336},
+    {"author": "Дж. Д. Сэлинджер", "title": "Над пропастью во ржи", "genre": "Роман", "pages": 224},
+    {"author": "Маргарет Этвуд", "title": "Рассказ служанки", "genre": "Антиутопия", "pages": 310},
+    {"author": "Иван тургенев", "title": "Отцы и дети", "genre": "Роман", "pages": 416},
+    {"author": "Рэй Брэдбери", "title": "451 градус по Фаренгейту", "genre": "Научная фантастика", "pages": 174}
+]
+
+@app.route('/lab2/books/')
+def book():
+    return render_template('books.html', books=books)
