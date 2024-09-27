@@ -50,7 +50,7 @@ h1 {
 }
 p {
     margin-left: 15px;
-    line-height: 0.5;
+    line-height: 1;
 }
 
 table {
@@ -61,4 +61,8 @@ table {
 td {
     padding: 5px;
     padding-right: 50px;
+}
+img {
+    width: 30%;
+    margin-left: 35%;
 }
