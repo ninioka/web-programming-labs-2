@@ -8,14 +8,22 @@
     <h1>Список всех цветов:</h1>
     <p>Всего цветов: {{flowers_num}} </p>
     <p>
-        Полный список: 
+        Полный список:
         <ul>
-        {% for f in flower_list %}
-            <li>{{f}}</li>
-        {% endfor %}
+            {% for f in flower_list %}
+                <li>{{ f.name }}: {{ f.price }} &#x20bd
+                <a href="/lab2/delete_flower/{{ loop.index }}">Удалить</a></li>
+            {% endfor %}
         </ul>
     </p>
-    <a href="/lab2/add_flower/">Добавить цветок</a><br>
+
+    <p>Добавить новый цветок:</p>
+    <form action="{{ '/lab2/add_flower/' }}">        
+        <input type="text" id="name" name="name" placeholder="Название"><br>   
+        <input type="number" id="price" name="price" placeholder="Цена"><br>
+        <button type="submit">Добавить</button>
+    </form><br>
     <a href="/lab2/flowers/">Найти цветок по ID</a><br>
     <a href="/lab2/delete_flowers/">Очистить список цветов</a>
+
 {% endblock %}
