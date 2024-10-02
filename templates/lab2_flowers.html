@@ -12,15 +12,15 @@
         <ul>
             {% for f in flower_list %}
                 <li>{{ f.name }}: {{ f.price }} &#x20bd
-                <a href="/lab2/delete_flower/{{ loop.index }}">Удалить</a></li>
+                <a href="/lab2/delete_flower/{{ loop.index0 }}">Удалить</a></li>
             {% endfor %}
         </ul>
     </p>
 
     <p>Добавить новый цветок:</p>
     <form action="{{ '/lab2/add_flower/' }}">        
-        <input type="text" id="name" name="name" placeholder="Название"><br>   
-        <input type="number" id="price" name="price" placeholder="Цена"><br>
+        <input type="text" name="name" placeholder="Название"><br>   
+        <input type="number" name="price" placeholder="Цена"><br>
         <button type="submit">Добавить</button>
     </form><br>
     <a href="/lab2/flowers/">Найти цветок по ID</a><br>
