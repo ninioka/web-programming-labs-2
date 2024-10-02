@@ -506,14 +506,14 @@ def all_flowers():
 
 #Добавление цветка
 @app.route('/lab2/add_flower/')
-def add_flower():
+def add_flowers():
     name = request.args.get('name')
     price = request.args.get('price')
     style = url_for("static", filename="main.css")
     if name and price:
         flower_list.append({'name': name, 'price': int(price)})
         flower_id = len(flower_list) - 1
-        return redirect(url_for('flowers', flower_id=flower_id))
+        return render_template('add_flower.html', flower_id=flower_id, name=name, price=price)
     else:    
         return '''
 <!doctype html>

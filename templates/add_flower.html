@@ -5,8 +5,8 @@
 {% block main %}
     <h1>Добавлен новый цветок</h1>
     <p>Название нового цветка: {{ name }}</p>
-    <p>Цена нового цветка: {{ price }}</p>
-    <p>Всего цветов: {{ flowers_num }}</p>
+    <p>Цена нового цветка: {{ price }} &#x20bd</p>
+    <p>Номер цветка: {{ flower_id }}</p>
     <ul>
         {% for flower in flower_list %}
             <li>{{ flower.name }}: {{ flower.price }}</li>
