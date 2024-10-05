@@ -1,103 +1,16 @@
-from flask import Flask, url_for, redirect, render_template, request
-from lab1 import lab1
-from lab2 import lab2
-app = Flask(__name__)
-app.register_blueprint(lab1)
-app.register_blueprint(lab2)
+from flask import Blueprint, url_for, redirect, render_template, request
+lab2 = Blueprint('lab2', __name__)
 
-@app.errorhandler(404)
-def not_found(err):
-    path = url_for("static", filename="404.jpg")
-    return '''
-<!doctype html>
-<html>
-    <head>
-        <style>
-            img {
-                width: 70%;
-                margin-top: 3px;
-            }
-            body {
-                text-align: center;
-                color: rgb(124,166,216);
-                background-color: rgb(219,201,191);
-                font-size: 26pt;
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            }
-        </style>
-    </head>
-    <body>
-        <p>Ой... Мы не можем найти эту страницу :(<br>Попробуйте позже!</p><br>
-        <img src="'''+ path +'''"><br>
-    </body>
-</html>
-''', 404
 
-@app.route("/")
-@app.route("/index")
-def main():
-    style = url_for("static", filename = "style.css")
-    return '''
-<!doctype html>
-<html>
-    <head>
-        <title>НГТУ, ФБ, Лабораторные работы</title>  
-    </head>
-    <body>
-        <header>
-            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
-            <link rel="stylesheet" type="text/css" href="''' + style + '''">
-        </header>
-        <main>
-            <ul>
-                <li><a href = "/lab1">Первая лабораторная</a></li>
-                <li><a href = "/lab2/">Вторая лабораторная</a></li>
-            </ul>
-        </main>
-        <footer>
-            &copy; Нина Демченко, ФБИ-22, 3 курс, 2024
-        </footer>
-    </body>
-</html>
-'''
-
-@app.errorhandler(500)
-def interceptor(err):
-    return '''
-<!doctype html>
-<head>
-    <style>
-        body {
-            font-family: 'Pacifico', cursive;
-            background-color: #c5bdbd;
-            margin-top: 250px;
-            text-align: center;
-            font-size: 25px;
-        }
-        h1 {
-            color: #b3725c;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #797575;
-        }
-    </style>
-</head>
-<body>
-    <h1>Ошибка сервера.</h1>
-    <p>На сервере произошла ошибка. Можете не ждать, она исправлена не будет. ИЗВИНИТЕ!</p>
-</body>
-</html>''', 500
-
-#Лабораторная работа 2
-
-@app.route('/lab2/a')
+@lab2.route('/lab2/a')
 def a():
     return 'без слэша'
 
-@app.route('/lab2/a/')
+
+@lab2.route('/lab2/a/')
 def a2():
     return 'со слэшем'
+
 
 flower_list =  [
     {'name': 'Роза', 'price': 150},
@@ -106,20 +19,23 @@ flower_list =  [
     {'name': 'Ромашка', 'price': 30}
 ]
 
+
 #Меню всех цветов
-@app.route('/lab2/all_flowers/')
+@lab2.route('/lab2/all_flowers/')
 def all_flowers():
     flowers = flower_list
     flowers_num = len(flower_list)
     return render_template('lab2_flowers.html', flower_list=flowers, flowers_num=flowers_num)
 
-# @app.route('/lab2/add_flower/<name>/<int:price>/')
+
+# @lab2.route('/lab2/add_flower/<name>/<int:price>/')
 # def add_flower(name, price):
-#     flower_list.append({'name': name, 'price': price})
+#     flower_list.lab2end({'name': name, 'price': price})
 #     flowers_num = len(flower_list)
 #     return render_template('add_flower.html', name=name, price=price, flowers_num=flowers_num)
 
-# @app.route('/lab2/add_flower/')
+
+# @lab2.route('/lab2/add_flower/')
 # def err_add_flower():
 #     style = url_for("static", filename="main.css")
 #     return '''
@@ -134,8 +50,9 @@ def all_flowers():
 # </html>
 # ''', 400
 
+
 #Добавление цветка
-@app.route('/lab2/add_flower/')
+@lab2.route('/lab2/add_flower/')
 def add_flowers():
     name = request.args.get('name')
     price = request.args.get('price')
@@ -158,8 +75,9 @@ def add_flowers():
 </html>
 ''', 400
 
+
 #Цветок по ID
-@app.route('/lab2/flowers/<int:flower_id>')
+@lab2.route('/lab2/flowers/<int:flower_id>')
 def flowers(flower_id):
     style = url_for("static", filename="main.css")
     if flower_id >= len(flower_list):
@@ -179,8 +97,9 @@ def flowers(flower_id):
         flower = flower_list[flower_id]
     return render_template('flowers_id.html', flower=flower, flower_id=flower_id)
 
+
 #Не задан ID цветка
-@app.route('/lab2/flowers/')
+@lab2.route('/lab2/flowers/')
 def err_flowers():
     style = url_for("static", filename="main.css")
     return '''
@@ -196,14 +115,16 @@ def err_flowers():
 </html>
 ''', 400
 
+
 #Очистить весь список цветов
-@app.route('/lab2/delete_flowers/')
+@lab2.route('/lab2/delete_flowers/')
 def delete_flowers():
     flower_list.clear()  
     return redirect('/lab2/all_flowers/')
 
+
 #Удалить цветок по ID
-@app.route('/lab2/delete_flower/<int:flower_id>')
+@lab2.route('/lab2/delete_flower/<int:flower_id>')
 def delete_flower(flower_id):
     style = url_for("static", filename="main.css")
     if flower_id >= len(flower_list):
@@ -223,7 +144,8 @@ def delete_flower(flower_id):
         del flower_list[flower_id]
         return redirect('/lab2/all_flowers/')
 
-@app.route('/lab2/example')
+
+@lab2.route('/lab2/example')
 def example():
     name = 'Нина Демченко'
     lab_num = '2'
@@ -238,16 +160,19 @@ def example():
         ]
     return render_template('example.html', name=name, lab_num=lab_num, group=group, course_number=course_number, fruits=fruits)
 
-@app.route('/lab2/')
-def lab2():
+
+@lab2.route('/lab2/')
+def lab():
     return render_template('lab2.html')
 
-@app.route('/lab2/filters')
+
+@lab2.route('/lab2/filters')
 def filters():
     phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filter.html', phrase = phrase)
 
-@app.route('/lab2/calc/<int:a>/<int:b>')
+
+@lab2.route('/lab2/calc/<int:a>/<int:b>')
 def calc(a, b):
     num_a = a
     num_b = b
@@ -259,13 +184,16 @@ def calc(a, b):
     return render_template('calc.html', a=num_a, b=num_b, addition=addition, subtraction=subtraction,
                            multiplication=multiplication, division=division, power=power)
 
-@app.route('/lab2/calc/')
+
+@lab2.route('/lab2/calc/')
 def red_calc():
     return redirect('/lab2/calc/1/1')
 
-@app.route('/lab2/calc/<int:a>')
+
+@lab2.route('/lab2/calc/<int:a>')
 def redi_calc(a):
     return redirect(f'/lab2/calc/{a}/1')
+
 
 books = [
     {"author": "Маргарет Митчелл", "title": "Унесенные ветром", "genre": "Роман", "pages": 992},
@@ -280,9 +208,11 @@ books = [
     {"author": "Рэй Брэдбери", "title": "451 градус по Фаренгейту", "genre": "Научная фантастика", "pages": 174}
 ]
 
-@app.route('/lab2/books/')
+
+@lab2.route('/lab2/books/')
 def book():
     return render_template('books.html', books=books)
+
 
 cats = [
     {
@@ -311,6 +241,8 @@ cats = [
         "image": "cat5.png"
     }
 ]
-@app.route('/lab2/cats/')
+
+
+@lab2.route('/lab2/cats/')
 def cat():
-    return render_template('cats.html', cats=cats) 
+    return render_template('cats.html', cats=cats)
