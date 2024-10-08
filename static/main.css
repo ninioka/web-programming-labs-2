@@ -107,3 +107,6 @@ select {
     height: 20px;
     border-radius: 10px;
 }
+.error {
+    color: rgb(173, 11, 11);
+}
