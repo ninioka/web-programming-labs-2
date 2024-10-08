@@ -12,7 +12,7 @@
     <h2>Добро пожаловать на наш сайт!</h2>
 
     <div style="text-align: center;">Ваш возраст: {{ age }}</div>
-    <div style="text-align: center;">Ваш пол: {{ sex }}</div>
+    <div style="text-align: center;">Ваш пол: {{ 'Мужской' if sex == 'male' else 'Женский'}}</div>
     <div></div>
 
     <div style="text-align: center;">
