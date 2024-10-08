@@ -60,6 +60,10 @@ h1 {
     font-size: 24pt;
     text-align: center;
 }
+h2 {
+    font-size: 20pt;
+    text-align: center;
+}
 p {
     margin-left: 15px;
     line-height: 1;
