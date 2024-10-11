@@ -110,3 +110,20 @@ select {
 .error {
     color: rgb(173, 11, 11);
 }
+.drinks {
+    border: 3px solid rgb(71, 20, 20);
+    border-radius: 40px;
+    padding: 20px;
+    margin: auto;
+    width: 23%;
+    background-color: rgb(209, 158, 158);
+}
+.pay{
+    border: 3px solid rgb(71, 20, 20);
+    border-radius: 40px;
+    padding: 20px;
+    margin: auto;
+    width: 23%;
+    background-color: rgb(209, 158, 158);
+    text-align: center;
+}
