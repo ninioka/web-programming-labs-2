@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Cookies</h1>
+    <form>
+        <div>
+            <label for="color">Выберите цвет текста:</label>
+            <input type="color" id="color" name="color" value="{{ color or '' }}">
+        </div>
+
+        <div>
+            <button type="submit">ОK</button>
+        </div>        
+    </form>
+    
+    <form>
+        <div>
+            <label for="color">Выберите цвет фона:</label>
+            <input type="color" id="bgcolor" name="bgcolor" value="{{ bgcolor or '' }}">
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+
+    <form>
+        <div>
+            <label for="fize">Выберите размер шрифта:</label>
+            <input type="range"  min="10" max="30" id="fsize" name="fsize" value="{{ fsize or '16' }}">
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+
+    <form>
+        <div>
+            <label for="textalign">Выберите выравнивание текста:</label>
+            <select id="textalign" name="textalign">
+                <option value="left" {{ textalign == 'left' and 'selected' }}>Слева</option>
+                <option value="center" {{ textalign == 'center' and 'selected' }}>По центру</option>
+                <option value="right" {{ textalign == 'right' and 'selected' }}>Справа</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+{% endblock %}

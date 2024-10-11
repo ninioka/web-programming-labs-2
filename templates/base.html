@@ -6,6 +6,25 @@
     <title>Нина Демченко.{% block lab %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <style>
+        body{
+            {% if request.cookies.get('color') %}
+                color: {{ request.cookies.get('color') }};
+            {% endif %}
+    
+            {% if request.cookies.get('bgcolor') %}
+                background-color: {{ request.cookies.get('bgcolor') }};
+            {% endif %}
+    
+            {% if request.cookies.get('fsize') %}
+                font-size: {{ request.cookies.get('fsize') + 'pt' }} ;
+            {% endif %}
+    
+            {% if request.cookies.get('textalign') %}
+                text-align: {{ request.cookies.get('textalign') }};
+            {% endif %}
+        }
+    </style>
 </head>
 <body>
     <header>

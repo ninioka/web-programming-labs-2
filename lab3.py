@@ -68,3 +68,34 @@ def pay():
 def success():
     global price 
     return render_template('lab3/success.html', price=price)
+
+@lab3.route('/lab3/settings/')
+def settings():
+    color = request.args.get('color')
+    bgcolor = request.args.get('bgcolor')
+    fsize = request.args.get('fsize')
+    textalign = request.args.get('textalign')
+
+    if color:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('color', color)
+        return resp
+    if bgcolor:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('bgcolor', bgcolor)
+        return resp
+    if fsize:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('fsize', fsize)
+        return resp
+    if textalign:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('textalign', textalign)
+        return resp
+
+    color = request.cookies.get('color')
+    bgcolor = request.cookies.get('bgcolor')
+    fsize = request.cookies.get('fsize')
+    textalign = request.cookies.get('textalign')
+    resp = make_response(render_template('lab3/settings.html', color=color, bgcolor=bgcolor, fsize=fsize, textalign=textalign))
+    return resp
