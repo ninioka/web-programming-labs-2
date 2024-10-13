@@ -35,8 +35,8 @@ def author():
 
 @lab1.route('/lab1/oak')
 def oak():
-    path = url_for("static", filename="oak.jpg")
-    path1 = url_for("static", filename = "lab1.css")
+    path = url_for("static", filename="lab1/oak.jpg")
+    path1 = url_for("static", filename = "lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -103,7 +103,7 @@ def created():
 
 @lab1.route("/lab1/")
 def lab():
-    style = url_for("static", filename = "style.css")
+    style = url_for("static", filename = "lab1/style.css")
     return '''
 <!doctype html>
 <html>
@@ -282,8 +282,8 @@ tree_planted = False
 
 @lab1.route('/lab1/source')
 def tree_status():
-    style = url_for("static", filename="style2.css")
-    path = url_for("static", filename="Дерево.jpg")
+    style = url_for("static", filename="lab1/style2.css")
+    path = url_for("static", filename="lab1/Дерево.jpg")
     global tree_planted
     status = "Дерево посажено" if tree_planted else "Дерево еще не посажено"
     return '''
@@ -304,9 +304,9 @@ def tree_status():
 
 @lab1.route('/lab1/create')
 def plant_tree():
-    style = url_for("static", filename="style2.css")
-    path = url_for("static", filename="Посажено400.jpg")
-    path1 = url_for("static", filename="Посажено201.jpeg")
+    style = url_for("static", filename="lab1/style2.css")
+    path = url_for("static", filename="lab1/Посажено400.jpg")
+    path1 = url_for("static", filename="lab1/Посажено201.jpeg")
     global tree_planted
     if tree_planted:
         return '''
@@ -351,9 +351,9 @@ def plant_tree():
 
 @lab1.route('/lab1/delete')
 def remove_tree():
-    style = url_for("static", filename="style2.css")
-    path = url_for("static", filename="Полито200.webp")
-    path1 = url_for("static", filename="Полито400.webp")
+    style = url_for("static", filename="lab1/style2.css")
+    path = url_for("static", filename="lab1/Полито200.webp")
+    path1 = url_for("static", filename="lab1/Полито400.webp")
     global tree_planted    
     if tree_planted:
         tree_planted = False

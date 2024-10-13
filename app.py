@@ -11,7 +11,7 @@ app.register_blueprint(lab3)
 
 @app.errorhandler(404)
 def not_found(err):
-    path = url_for("static", filename="404.jpg")
+    path = url_for("static", filename="lab1/404.jpg")
     return '''
 <!doctype html>
 <html>
@@ -40,7 +40,7 @@ def not_found(err):
 @app.route("/")
 @app.route("/index")
 def main():
-    style = url_for("static", filename = "style.css")
+    style = url_for("static", filename = "lab1/style.css")
     return '''
 <!doctype html>
 <html>

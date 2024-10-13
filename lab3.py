@@ -105,3 +105,38 @@ def settings():
     textalign = request.cookies.get('textalign')
     resp = make_response(render_template('lab3/settings.html', color=color, bgcolor=bgcolor, fsize=fsize, textalign=textalign))
     return resp
+
+@lab3.route('/lab3/form2')
+def form2():
+    error = {}
+    pass_name = request.args.get('pass_name')
+    if pass_name == '':
+        error['pass_name'] = 'Заполните поле!'
+
+    shelf = request.args.get('shelf')
+    bedding = request.args.get('bedding') == 'on'
+    luggage = request.args.get('luggage') == 'on'
+
+    age = request.args.get('age')
+    if age == '':
+        error['age'] = 'Заполните поле!'
+
+    departure = request.args.get('departure')
+    if departure == '':
+        error['departure'] = 'Заполните поле!'
+
+    destination = request.form.get('destination')
+    if destination == '':
+        error['destination'] = 'Заполните поле!'
+
+    date = request.args.get('date')
+    if date == '':
+        error['date'] = 'Заполните поле!'
+
+    insurance = request.args.get('insurance') == 'on'
+    return render_template('lab3/form2.html', error=error, pass_name=pass_name, shelf=shelf, bedding=bedding, luggage=luggage,
+                           age=age, departure=departure, destination=destination, date=date, insurance=insurance)
+
+@lab3.route('/lab3/ticket')
+def ticket():
+    return render_template('lab3/form2.html')

@@ -25,14 +25,14 @@ flower_list =  [
 def all_flowers():
     flowers = flower_list
     flowers_num = len(flower_list)
-    return render_template('lab2_flowers.html', flower_list=flowers, flowers_num=flowers_num)
+    return render_template('lab2/lab2_flowers.html', flower_list=flowers, flowers_num=flowers_num)
 
 
 # @lab2.route('/lab2/add_flower/<name>/<int:price>/')
 # def add_flower(name, price):
 #     flower_list.lab2end({'name': name, 'price': price})
 #     flowers_num = len(flower_list)
-#     return render_template('add_flower.html', name=name, price=price, flowers_num=flowers_num)
+#     return render_template('lab2/add_flower.html', name=name, price=price, flowers_num=flowers_num)
 
 
 # @lab2.route('/lab2/add_flower/')
@@ -60,7 +60,7 @@ def add_flowers():
     if name and price:
         flower_list.append({'name': name, 'price': int(price)})
         flower_id = len(flower_list) - 1
-        return render_template('add_flower.html', flower_id=flower_id, name=name, price=price)
+        return render_template('lab2/add_flower.html', flower_id=flower_id, name=name, price=price)
     else:    
         return '''
 <!doctype html>
@@ -95,7 +95,7 @@ def flowers(flower_id):
 ''', 404
     else:
         flower = flower_list[flower_id]
-    return render_template('flowers_id.html', flower=flower, flower_id=flower_id)
+    return render_template('lab2/flowers_id.html', flower=flower, flower_id=flower_id)
 
 
 #Не задан ID цветка
@@ -158,18 +158,18 @@ def example():
         {'name': 'Мандарины', 'price': 95}, 
         {'name': 'Манго', 'price': 321}
         ]
-    return render_template('example.html', name=name, lab_num=lab_num, group=group, course_number=course_number, fruits=fruits)
+    return render_template('lab2/example.html', name=name, lab_num=lab_num, group=group, course_number=course_number, fruits=fruits)
 
 
 @lab2.route('/lab2/')
 def lab():
-    return render_template('lab2.html')
+    return render_template('lab2/lab2.html')
 
 
 @lab2.route('/lab2/filters')
 def filters():
     phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
-    return render_template('filter.html', phrase = phrase)
+    return render_template('lab2/filter.html', phrase = phrase)
 
 
 @lab2.route('/lab2/calc/<int:a>/<int:b>')
@@ -181,7 +181,7 @@ def calc(a, b):
     multiplication = a * b
     division = a / b if b != 0 else "Деление на ноль"
     power = a ** b
-    return render_template('calc.html', a=num_a, b=num_b, addition=addition, subtraction=subtraction,
+    return render_template('lab2/calc.html', a=num_a, b=num_b, addition=addition, subtraction=subtraction,
                            multiplication=multiplication, division=division, power=power)
 
 
@@ -211,7 +211,7 @@ books = [
 
 @lab2.route('/lab2/books/')
 def book():
-    return render_template('books.html', books=books)
+    return render_template('lab2/books.html', books=books)
 
 
 cats = [
@@ -245,4 +245,4 @@ cats = [
 
 @lab2.route('/lab2/cats/')
 def cat():
-    return render_template('cats.html', cats=cats)
+    return render_template('lab2/cats.html', cats=cats)
