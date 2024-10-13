@@ -108,35 +108,49 @@ def settings():
 
 @lab3.route('/lab3/form2')
 def form2():
-    error = {}
+    errors = {}
     pass_name = request.args.get('pass_name')
     if pass_name == '':
-        error['pass_name'] = 'Заполните поле!'
+        errors['pass_name'] = 'Заполните поле!'
 
     shelf = request.args.get('shelf')
     bedding = request.args.get('bedding') == 'on'
     luggage = request.args.get('luggage') == 'on'
 
-    age = request.args.get('age')
+    age = request.args.get('age', '')
     if age == '':
-        error['age'] = 'Заполните поле!'
+        errors['age'] = 'Заполните поле!'   
+    if age < str(1) or age > str(120):
+        errors['age'] = 'Возраст должен быть от 1 до 120 лет!'
 
     departure = request.args.get('departure')
     if departure == '':
-        error['departure'] = 'Заполните поле!'
+        errors['departure'] = 'Заполните поле!'
 
-    destination = request.form.get('destination')
+    destination = request.args.get('destination')
     if destination == '':
-        error['destination'] = 'Заполните поле!'
+        errors['destination'] = 'Заполните поле!'
 
     date = request.args.get('date')
     if date == '':
-        error['date'] = 'Заполните поле!'
-
+        errors['date'] = 'Заполните поле!'
     insurance = request.args.get('insurance') == 'on'
-    return render_template('lab3/form2.html', error=error, pass_name=pass_name, shelf=shelf, bedding=bedding, luggage=luggage,
-                           age=age, departure=departure, destination=destination, date=date, insurance=insurance)
 
-@lab3.route('/lab3/ticket')
-def ticket():
-    return render_template('lab3/form2.html')
+    if age >= str(18):
+        base_price = 1000 
+    else:
+        base_price = 700
+    if shelf in ['lower', 'lower_side']:
+        base_price += 100
+    if bedding:
+        base_price += 75
+    if luggage:
+        base_price += 250
+    if insurance:
+        base_price += 150
+
+    ticket_type = 'Детский билет' if age < str(18) else 'Взрослый билет'
+    price = base_price
+    return render_template('lab3/form2.html', errors=errors, pass_name=pass_name, shelf=shelf,
+                               bedding=bedding, luggage=luggage, age=age, departure=departure,
+                               destination=destination, date=date, insurance=insurance, ticket_type=ticket_type, price=price)
