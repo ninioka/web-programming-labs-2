@@ -10,7 +10,7 @@
         {% for cat in cats %}
         <h3>{{ cat.name }}</h3>
         <p>{{ cat.description}}</p>
-        <img src="{{ url_for('static', filename='cat_img/' + cat.image) }}" />
+        <img src="{{ url_for('static', filename='lab2/' + cat.image) }}" />
         {% endfor %}
     </ul>
 {% endblock %}

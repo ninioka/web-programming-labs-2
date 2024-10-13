@@ -1,10 +1,12 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0px;
+    color: rgb(71, 20, 20);
+    background-color: rgb(218, 188, 188);
+    font-size: 16pt;
 }
 main {
     font-family: Arial, Helvetica, sans-serif;
-
     font-weight: bold;
     margin: 10px 20px 45px;
     height: 0;
