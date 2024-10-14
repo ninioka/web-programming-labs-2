@@ -101,12 +101,21 @@ def settings():
         resp = make_response(redirect('/lab3/settings/'))
         resp.set_cookie('textalign', textalign)
         return resp
-
+    
     color = request.cookies.get('color')
     bgcolor = request.cookies.get('bgcolor')
     fsize = request.cookies.get('fsize')
     textalign = request.cookies.get('textalign')
     resp = make_response(render_template('lab3/settings.html', color=color, bgcolor=bgcolor, fsize=fsize, textalign=textalign))
+    return resp
+
+@lab3.route('/lab3/clear_cookie')
+def clear_cookie():
+    resp = make_response(redirect('/lab3/settings/'))
+    resp.set_cookie('color', '')
+    resp.set_cookie('bgcolor', '')
+    resp.set_cookie('fsize', '')
+    resp.set_cookie('textalign', '')
     return resp
 
 
