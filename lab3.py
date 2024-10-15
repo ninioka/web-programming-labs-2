@@ -112,10 +112,10 @@ def settings():
 @lab3.route('/lab3/clear_cookie')
 def clear_cookie():
     resp = make_response(redirect('/lab3/settings/'))
-    resp.set_cookie('color', '')
-    resp.set_cookie('bgcolor', '')
-    resp.set_cookie('fsize', '')
-    resp.set_cookie('textalign', '')
+    resp.delete_cookie('color')
+    resp.delete_cookie('bgcolor')
+    resp.delete_cookie('fsize')
+    resp.delete_cookie('textalign')
     return resp
 
 
