@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Сложение чисел{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    {% if error %}
+        {{ error }}
+    {% else %}
+    <h1>Сложение чисел</h1>
+    {{ x1 }} + {{ x2 }} = {{ result }}
+    {% endif %}<br>
+    <a href="/lab4/sum-form">Назад</a>
+{% endblock %}
