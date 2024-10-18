@@ -6,10 +6,14 @@ from lab4 import lab4
 
 
 app = Flask(__name__)
+
+app.secret_key = 'Секретно-секретный секрет'
+
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
+
 
 @app.errorhandler(404)
 def not_found(err):
