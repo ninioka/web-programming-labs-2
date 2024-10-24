@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    {% if error %}
+        <h2 class="error">{{ error }}</h2>
+    {% else %}
+        <div class="ticket">
+            <h3>Заказ успешно сформирован.</h3>
+            <div>Вы заказали: {{ seed }}</div>
+            <div>Вес: {{ weight }} т.</div>
+            <div>Сумма к оплате: {{ total_cost }} &#8381</div>
+            {% if discount %}
+                <div>Скидка за большой объём: {{ discount }} &#8381</div>
+            {% endif %}
+        </div>
+    {% endif %}<br>
+    <a href="/lab4/seed-form">Назад</a>
+{% endblock %}

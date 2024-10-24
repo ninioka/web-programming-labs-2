@@ -199,3 +199,42 @@ def fridge():
         return render_template('/lab4/fridge.html', error='Не удалось установить температуру — слишком высокое значение')
     else:
         return render_template('/lab4/fridge.html', temperature=temperature)
+    
+
+@lab4.route('/lab4/seed-form')
+def seed_form():
+    return render_template('/lab4/seed-form.html')
+
+@lab4.route('/lab4/seed', methods=['POST'])
+def seed():
+    seed_type = request.form.get('seed')
+    weight = request.form.get('weight')
+
+    if weight == '':
+        return render_template('/lab4/seed.html', error='Укажите вес!')
+
+    weight = int(weight)
+
+    if weight <= 0:
+        return render_template('/lab4/seed.html', error='Вес должен быть больше 0!')
+
+    if weight > 500:
+        return render_template('/lab4/seed.html', error='Такого объёма сейчас нет в наличии :(')
+
+    if seed_type == "Ячмень":
+        price_per_ton = 12345
+    elif seed_type == "Овёс":
+        price_per_ton = 8522
+    elif seed_type == "Пшеница":
+        price_per_ton = 8722
+    else:
+        price_per_ton = 14111
+
+    total_cost = price_per_ton * weight
+
+    discount = 0
+    if weight > 50:
+        discount = total_cost * 0.1
+        total_cost -= discount
+
+    return render_template('/lab4/seed.html', seed=seed_type, weight=weight, total_cost=total_cost, discount=discount)
