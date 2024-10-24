@@ -180,9 +180,11 @@ def logout():
     session.pop('gender', None)
     return redirect('/lab4/login')
 
+
 @lab4.route('/lab4/fridge-form')
 def fridge_form():
     return render_template('/lab4/fridge_form.html')
+
 
 @lab4.route('/lab4/fridge', methods=['POST'])
 def fridge():
@@ -204,6 +206,7 @@ def fridge():
 @lab4.route('/lab4/seed-form')
 def seed_form():
     return render_template('/lab4/seed-form.html')
+
 
 @lab4.route('/lab4/seed', methods=['POST'])
 def seed():
@@ -236,5 +239,4 @@ def seed():
     if weight > 50:
         discount = total_cost * 0.1
         total_cost -= discount
-
     return render_template('/lab4/seed.html', seed=seed_type, weight=weight, total_cost=total_cost, discount=discount)
