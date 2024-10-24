@@ -179,3 +179,23 @@ def logout():
     session.pop('name', None)
     session.pop('gender', None)
     return redirect('/lab4/login')
+
+@lab4.route('/lab4/fridge-form')
+def fridge_form():
+    return render_template('/lab4/fridge_form.html')
+
+@lab4.route('/lab4/fridge', methods=['POST'])
+def fridge():
+    temperature = request.form.get('temperature')
+
+    if temperature == '':
+        return render_template('/lab4/fridge.html', error='Ошибка: не задана температура')
+
+    temperature = int(temperature)
+
+    if temperature < -12:
+        return render_template('/lab4/fridge.html', error='Не удалось установить температуру — слишком низкое значение')
+    elif temperature > -1:
+        return render_template('/lab4/fridge.html', error='Не удалось установить температуру — слишком высокое значение')
+    else:
+        return render_template('/lab4/fridge.html', temperature=temperature)

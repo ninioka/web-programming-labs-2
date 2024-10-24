@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+<form method="post" action="/lab4/fridge">
+    <h1>Установка температуры холодильника</h1>
+    <div class="ticket">
+        <input type="number" name="temperature" placeholder="Введите температуру (°C)">
+        <button type="submit">Установить</button>
+    </div><br>
+    <img src="{{ url_for('static', filename='lab4/холодильник.png') }}" style="width: 30%; text-align: center;">
+</form>
+<a href="/lab4/">Назад</a>
+{% endblock %}

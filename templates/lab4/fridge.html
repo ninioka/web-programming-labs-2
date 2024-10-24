@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    {% if error %}
+    <h2 class="error">{{ error }}</h2>
+    {% else %}
+        <h2>Установлена температура: {{ temperature }}°C</h2>
+        {% if temperature <= -9 and temperature >= -12 %}
+            <h2>&#x2744;&#xFE0F;&#x2744;&#xFE0F;&#x2744;&#xFE0F;</h2>
+        {% elif temperature <= -5 and temperature >= -8 %}
+            <h2>&#x2744;&#xFE0F;&#x2744;&#xFE0F;</h2>
+        {% elif temperature <= -1 and temperature >= -4 %}
+            <h2>&#x2744;&#xFE0F;</h2>
+        {% endif %}
+    {% endif %}<br>
+    <a href="/lab4/fridge-form">Назад</a>
+{% endblock %}
