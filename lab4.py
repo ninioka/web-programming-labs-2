@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session
+from flask import Blueprint, render_template, request, redirect, session, make_response
 lab4 = Blueprint('lab4', __name__)
 
 
@@ -133,10 +133,10 @@ def tree():
 
 
 users = [
-    {'login': 'alex', 'password': '123', 'name': 'Александр Синицын', 'gender': 'Мужской'},
-    {'login': 'bob', 'password': '555', 'name': 'Роберт Адамс', 'gender': 'Мужской'},
-    {'login': 'nina', 'password': '134', 'name': 'Нина Демченко', 'gender': 'Женский'},
-    {'login': 'lola', 'password': '789', 'name': 'Лолита Высотская', 'gender': 'Женский'}
+    {'login': 'alex', 'password': '123', 'name': 'Александр Синицын', 'gender': 'мужской'},
+    {'login': 'bob', 'password': '555', 'name': 'Роберт Адамс', 'gender': 'мужской'},
+    {'login': 'nina', 'password': '134', 'name': 'Нина Демченко', 'gender': 'женский'},
+    {'login': 'lola', 'password': '789', 'name': 'Лолита Высотская', 'gender': 'женский'}
 ]
 
 @lab4.route('/lab4/login', methods = ['GET', 'POST'])
@@ -150,7 +150,7 @@ def login():
             authorized=False
             name = ''
             gender = ''
-        return render_template('/lab4/login.html', authorized=authorized, name=name, gender=gender)
+        return render_template('/lab4/login.html', authorized=authorized, name=name, gender=gender, users=users)
     
     login = request.form.get('login')
 
@@ -179,6 +179,37 @@ def logout():
     session.pop('name', None)
     session.pop('gender', None)
     return redirect('/lab4/login')
+
+
+@lab4.route('/lab4/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        gender = request.form.get('gender')
+        login = request.form.get('login')
+        password = request.form.get('password')
+
+        if not name or not gender or not login or not password:
+            error = 'Пожалуйста, заполните все поля.'
+            return render_template('/lab4/register.html', error=error)
+
+        # Проверьте, существует ли пользователь с таким же логином
+        for user in users:
+            if user['login'] == login:
+                error = 'Пользователь с таким логином уже существует.'
+                return render_template('/lab4/register.html', error=error)
+
+        # Добавьте нового пользователя в массив
+        users.append({
+            'name': name,
+            'gender': gender,
+            'login': login,
+            'password': password
+        })
+        return redirect('/lab4/login')
+    return render_template('/lab4/register.html')
+
+
 
 
 @lab4.route('/lab4/fridge-form')
@@ -240,3 +271,5 @@ def seed():
         discount = total_cost * 0.1
         total_cost -= discount
     return render_template('/lab4/seed.html', seed=seed_type, weight=weight, total_cost=total_cost, discount=discount)
+
+
