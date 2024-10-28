@@ -33,6 +33,7 @@ def div():
 def sum_form():
     return render_template('/lab4/sum_form.html')
 
+
 @lab4.route('/lab4/sum', methods = ['POST'])
 def sum():
     x1 = request.form.get('x1')
@@ -55,6 +56,7 @@ def sum():
 @lab4.route('/lab4/multiply-form')
 def multiply_form():
     return render_template('/lab4/multiply_form.html')
+
 
 @lab4.route('/lab4/multiply', methods = ['POST'])
 def multiply():
@@ -79,6 +81,7 @@ def multiply():
 def sub_form():
     return render_template('/lab4/sub_form.html')
 
+
 @lab4.route('/lab4/sub', methods = ['POST'])
 def sub():
     x1 = request.form.get('x1')
@@ -97,6 +100,7 @@ def sub():
 @lab4.route('/lab4/deg-form')
 def deg_form():
     return render_template('/lab4/deg_form.html')
+
 
 @lab4.route('/lab4/deg', methods = ['POST'])
 def deg():
@@ -312,5 +316,3 @@ def seed():
         discount = total_cost * 0.1
         total_cost -= discount
     return render_template('/lab4/seed.html', seed=seed_type, weight=weight, total_cost=total_cost, discount=discount)
-
-
