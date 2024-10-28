@@ -1,36 +1,34 @@
 {% extends "base.html" %}
-
-{# Номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 4{% endblock %}
-
-{# Основной контент: #}
 {% block main %}
     <h1>Регистрация</h1>
     <form method="post">
-        <div>
-            <label for="name">Имя:</label>
-            <input type="text" id="name" name="name">
+        <div class="ticket">
+            <div>
+                <label>Логин:</label>
+                <input type="text" id="login" name="login">
+            </div>
+            <div>
+                <label>Пароль:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div>
+                <label>Имя:</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div>
+                <label>Пол:</label>
+                <select id="gender" name="gender">
+                    <option value="женский">Женский</option>
+                    <option value="мужской">Мужской</option>            
+                </select>
+            </div>
+            <div class="error">{{ error }}</div>
+            <div>
+                <button type="submit" style="margin-bottom: 0px;">Зарегистрироваться</button><br>
+                <button type="reset">Отмена</button>
+            </div>
+            <a href="/lab4/login">Уже есть аккаунт? Войдите!</a><br>
+            <a href="/lab4/">Назад</a>
         </div>
-        <div>
-            <label for="gender">Пол:</label>
-            <select id="gender" name="gender">
-                <option value="мужской">Мужской</option>
-                <option value="женский">Женский</option>
-            </select>
-        </div>
-        <div>
-            <label for="login">Логин:</label>
-            <input type="text" id="login" name="login">
-        </div>
-        <div>
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password">
-        </div>
-        <div class="error">{{ error }}</div>
-        <div>
-            <button type="submit">Зарегистрироваться</button>
-            <button type="reset">Отмена</button>
-        </div>
-    </form>
-    <a href="/lab4/login">Назад на страницу входа</a>
 {% endblock %}

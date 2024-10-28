@@ -1,20 +1,17 @@
 {% extends "base.html" %}
 
-{# Номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 4{% endblock %}
 
-{# Основной контент: #}
 {% block main %}
     {% if authorized %}
-        <h1>Добро пожаловать, {{ name }}!</h1><br>
-        <h2>Ваш пол: {{ gender }}</h2>
-        <h3>Список пользователей:</h3>
-        <ul>
-            {% for user in users %}
-                <li>{{ user.name }}, пол: {{ user.gender }} (логин: {{ user.login }})</li>
-            {% endfor %}
-        </ul>
-        <div>
+        <h1>Страница пользователя</h1><br>
+        <h2>Добро пожаловать, {{ name }}!</h2>
+        <h3 style="text-align: center;">Ваш пол: {{ gender }}</h3><br>
+        <div style="text-align: center;">
+            <a href="/lab4/users" style="text-align: center;">Посмотреть список пользователей</a>
+        </div>
+
+        <div style="text-align: center;">
             <form action="/lab4/logout" method="post">
                 <button>Выход</button>
             </form>
@@ -22,21 +19,29 @@
     {% else %}
         <h1>Вход</h1>
         <h2>Пожалуйста, авторизуйтесь</h2>
+
         <form method="post">
-            <div>
-                <label for="login">Пользователь:</label>
-                <input type="text" id="login" name="login" value="{{ login }}">
-            </div>
-            <div>
-                <label for="password">Пароль:</label>
-                <input type="password" id="password" name="password" value="{{ password }}">
-            </div>
-            <div class="error">{{ error }}</div>
-            <div>
-                <button type="submit">Войти</button>
-                <button type="reset">Отмена</button>
-            </div>
-        </form>
-        <a href="/lab4/">Назад</a>
+            <div class="ticket">
+                <div>
+                    <label>Логин:</label>
+                    <input type="text" id="login" name="login" value="{{ login }}">
+                </div>
+
+                <div>
+                    <label>Пароль:</label>
+                    <input type="password" id="password" name="password" value="{{ password }}">
+                </div>
+
+                <div class="error">{{ error }}</div>
+
+                <div>
+                    <button type="submit">Войти</button>
+                    <button type="reset">Отмена</button>
+                </div>
+            </form>
+            
+            <a href="/lab4/register">Зарегистрироваться</a><br>
+            <a href="/lab4/">Назад</a>
+        </div>
     {% endif %}
 {% endblock %}

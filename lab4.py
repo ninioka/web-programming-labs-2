@@ -168,6 +168,7 @@ def login():
         if login == user['login'] and password == user['password']:
             session['name'] = user['name']
             session['gender'] = user['gender']
+            session['login'] = user['login']
             return redirect('/lab4/login')
     
     error = 'Неверные логин и/или пароль'
@@ -178,38 +179,78 @@ def login():
 def logout():
     session.pop('name', None)
     session.pop('gender', None)
+    session.pop('login', None)
     return redirect('/lab4/login')
 
 
 @lab4.route('/lab4/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form.get('name')
-        gender = request.form.get('gender')
         login = request.form.get('login')
         password = request.form.get('password')
+        name = request.form.get('name')
+        gender = request.form.get('gender')
 
-        if not name or not gender or not login or not password:
-            error = 'Пожалуйста, заполните все поля.'
+        if login == '':
+            error = 'Все поля обязательны'
             return render_template('/lab4/register.html', error=error)
-
-        # Проверьте, существует ли пользователь с таким же логином
+        if password == '':
+            error = 'Все поля обязательны'
+            return render_template('/lab4/register.html', error=error)
+        if name == '':
+            error = 'Все поля обязательны'
+            return render_template('/lab4/register.html', error=error)
+            
         for user in users:
             if user['login'] == login:
-                error = 'Пользователь с таким логином уже существует.'
+                error = 'Логин уже занят'
                 return render_template('/lab4/register.html', error=error)
+            
+        users.append({'login': login, 
+                      'password': password, 
+                      'name': name, 
+                      'gender': gender})
 
-        # Добавьте нового пользователя в массив
-        users.append({
-            'name': name,
-            'gender': gender,
-            'login': login,
-            'password': password
-        })
         return redirect('/lab4/login')
+    
     return render_template('/lab4/register.html')
 
 
+@lab4.route('/lab4/users')
+def user_list():
+    if 'login' not in session:
+        return redirect('/lab4/login')
+    
+    return render_template('/lab4/users.html', users=users, name=session['name'])
+
+@lab4.route('/lab4/delete_user')
+def delete_user():
+    if 'login' in session:
+        current_login = session['login']
+
+        for user in users:
+            if user['login'] == current_login:
+                users.remove(user)                
+        logout()
+
+    return redirect('/lab4/login')
+
+
+@lab4.route('/lab4/edit_user', methods=['GET', 'POST'])
+def edit_user():
+    if 'login' not in session:
+        return redirect('/lab4/login')
+    
+    for user in users:
+        if user['login'] == session['login']:
+            current_user = user
+
+    if request.method == 'POST':
+        current_user['name'] = request.form.get('name')
+        current_user['password'] = request.form.get('password')
+
+        return redirect('/lab4/users')
+    return render_template('/lab4/edit_user.html', user=current_user)
 
 
 @lab4.route('/lab4/fridge-form')
