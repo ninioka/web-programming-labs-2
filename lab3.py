@@ -211,7 +211,7 @@ def search():
 @lab3.route('/lab3/result')
 def result():
     min_price = request.args.get('min_price', type=int)
-    max_price = request.args.get('max_price', type=int)
+    max_price = request.args.get('max_price', type=float)
 
     filtered_products = [
         product for product in products

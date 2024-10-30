@@ -109,6 +109,9 @@ def deg():
 
     if x1 == '' or x2 == '':
         return render_template('/lab4/deg.html', error='Оба поля должны быть заполнены!')
+
+    if x1 == '0' and x2 == '0':
+        return render_template('/lab4/deg.html', error='Поля не должны быть равны 0!')
     
     x1 = int(x1)
     x2 = int(x2)
