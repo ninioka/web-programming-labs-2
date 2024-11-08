@@ -96,10 +96,10 @@ def create():
     conn, cur = db_connect()
 
     cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
-    user_id = cur.fetchone()["id"]
+    login_id = cur.fetchone()["id"]
 
-    cur.execute("INSERT INTO articles(user_id, title, article_text) \
-                VALUES (%s, %s, %s);", (user_id, title, article_text))
+    cur.execute("INSERT INTO articles(login_id, title, article_text) \
+                VALUES (%s, %s, %s);", (login_id, title, article_text))
 
     db_close(conn, cur)
     return redirect('/lab5/')
@@ -114,9 +114,9 @@ def list():
     conn, cur = db_connect()
 
     cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
-    user_id = cur.fetchone()["id"]
+    login_id = cur.fetchone()["id"]
 
-    cur.execute("SELECT * FROM articles WHERE user_id=%s;", (user_id, ))
+    cur.execute("SELECT * FROM articles WHERE login_id=%s;", (login_id, ))
     articles = cur.fetchall()
 
     db_close(conn, cur)
