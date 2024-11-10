@@ -7,19 +7,26 @@
 {% block main %}
     <h1>Создание статьи</h1>
 
-    <form method="post">
+    {% if error %}
+    <h2 class="error">{{ error }}</h2>
+    <a href="/lab5/create">Назад</a>
+    {% else %}
+    <form method="post" class="ticket">
         <div>
             <label>
                 Название статьи:
-                <input type="text" maxlength="50" name="title">
+                <br><input type="text" maxlength="50" name="title">
             </label>
-        </div>
+        </div><br>
 
         <div>
             <textarea name="article_text"></textarea>
         </div>
+
         <div>
             <button type="submit">Готово</button>
         </div>
     </form>
+    <a href="/lab5/">Назад</a>
+    {% endif %}
 {% endblock %}

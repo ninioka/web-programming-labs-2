@@ -7,21 +7,23 @@
 {% block main %}
     <h1>Регистрация</h1>
     {% if error %}
-        {{ error }}
+    <h2 class="error">{{ error }}</h2>
+    <a href="/lab5/register">Назад</a>
     {% else %}
-    <form action="/lab5/register" method="post">
+    <form action="/lab5/register" method="post" class="ticket">
         <div>
             <label>
-                Логин: <input type="text" name="login">
+                Логин: <br><input type="text" name="login">
             </label>
         </div>
 
         <div>
             <label>
-                Пароль: <input type="password" name="password">
+                Пароль: <br><input type="password" name="password">
             </label>
         </div>
         <button type="submit">Зарегистрироваться</button>
     </form>
+    <a href="/lab5/">Назад</a>
     {% endif %}
 {% endblock %}

@@ -6,6 +6,13 @@
 {# Основной контент: #}
 {% block main %}
     <h1>База знаний</h1>
+    <div>
+        {% if login %}
+            Пользователь: {{ login }}
+        {% else %}
+        Пользователь: Anonymous
+        {% endif %}
+    </div>
     <ol>
         <li>
             <a href="/lab5/login">Вход</a>
@@ -21,10 +28,8 @@
         </li>
     </ol>
     <div>
-        {% if login %}
-            {{ login }}
-        {% else %}
-            Anonymous
-        {% endif %}
-    </div>
+        <form action="/lab5/logout" method="post">
+             <button>Выход</button>
+         </form> 
+     </div> 
 {% endblock %}
