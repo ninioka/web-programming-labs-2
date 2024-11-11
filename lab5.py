@@ -220,3 +220,122 @@ def delete_article(article_id):
     db_close(conn, cur)
     
     return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/users')
+def list_users():
+    conn, cur = db_connect()
+
+    cur.execute("SELECT login FROM users;")
+
+    users = cur.fetchall()
+    db_close(conn, cur)
+
+    return render_template('lab5/users.html', users=users)
+
+
+@lab5.route('/lab5/favorite/<int:article_id>', methods=['POST'])
+def favorite(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login, ))
+
+    login_id = cur.fetchone()["id"]
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("UPDATE articles SET is_favorite=TRUE WHERE id=%s AND login_id=%s;", (article_id, login_id))
+    else:
+        cur.execute("UPDATE articles SET is_favorite=TRUE WHERE id=? AND login_id=?;", (article_id, login_id))
+
+    db_close(conn, cur)
+
+    return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/unfavorite/<int:article_id>', methods=['POST'])
+def unfavorite(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login, ))
+
+    login_id = cur.fetchone()["id"]
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("UPDATE articles SET is_favorite=FALSE WHERE id=%s AND login_id=%s;", (article_id, login_id))
+    else:
+        cur.execute("UPDATE articles SET is_favorite=FALSE WHERE id=? AND login_id=?;", (article_id, login_id))
+
+    db_close(conn, cur)
+
+    return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/public_articles')
+def public_articles():
+    conn, cur = db_connect()
+
+    cur.execute("SELECT * FROM articles WHERE is_public='t' ORDER BY id ASC;")
+    public_articles = cur.fetchall()
+    db_close(conn, cur)
+
+    return render_template('/lab5/public_articles.html', public_articles=public_articles)
+
+
+@lab5.route('/lab5/public/<int:article_id>', methods=['POST'])
+def public(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login, ))
+
+    login_id = cur.fetchone()["id"]
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("UPDATE articles SET is_public='t' WHERE id=%s AND login_id=%s;", (article_id, login_id))
+    else:
+        cur.execute("UPDATE articles SET is_public='t' WHERE id=? AND login_id=?;", (article_id, login_id))
+
+    db_close(conn, cur)
+
+    return redirect('/lab5/list')
+
+@lab5.route('/lab5/private/<int:article_id>', methods=['POST'])
+def private(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login, ))
+
+    login_id = cur.fetchone()["id"]
+
+    cur.execute("UPDATE articles SET is_public='f' WHERE id=%s AND login_id=%s;", (article_id, login_id))
+
+    db_close(conn, cur)
+
+    return redirect('/lab5/list')

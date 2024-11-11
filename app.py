@@ -11,7 +11,6 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'Секретно-секретный секрет')
 app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
-app.secret_key = 'Секретно-секретный секрет'
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)

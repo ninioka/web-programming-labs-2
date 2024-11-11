@@ -11,13 +11,37 @@
         <h2 class="error">{{ message }}</h2>
     {% endif %}
 
+    <div>
     {% for article in articles %}
         <h2>{{ article['title'] }}</h2>
         <blockquote>{{ article['article_text'] }}</blockquote>
 
-        <a href="{{ url_for('lab5.edit_article', article_id=article['id']) }}" style="font-size: 14pt; color: rgb(167, 80, 80)">Редактировать</a>
-        <a href="{{ url_for('lab5.delete_article', article_id=article['id']) }}" style="font-size: 14pt; color: rgb(167, 80, 80)">Удалить</a>
+        <div style="text-align: center;">
+            {% if article['is_favorite'] %}
+                <form action="{{ url_for('lab5.unfavorite', article_id=article['id']) }}" method="post">
+                    <button type="submit">&#129505;</button>
+                </form>
+            {% else %}
+                <form action="{{ url_for('lab5.favorite', article_id=article['id']) }}" method="post">
+                    <button type="submit">&#10084;</button>
+                </form>
+            {% endif %}
+
+            {% if article['is_public'] %}
+                <form action="{{ url_for('lab5.private', article_id=article['id']) }}" method="post">
+                    <button type="submit">Сделать приватной</button>
+                </form>
+            {% else %}
+                <form action="{{ url_for('lab5.public', article_id=article['id']) }}" method="post">
+                    <button type="submit">Сделать публичной</button>
+                </form>
+            {% endif %}
+
+            <a href="{{ url_for('lab5.edit_article', article_id=article['id']) }}" style="font-size: 14pt; color: rgb(167, 80, 80)">Редактировать</a>
+            <a href="{{ url_for('lab5.delete_article', article_id=article['id']) }}" style="font-size: 14pt; color: rgb(167, 80, 80)">Удалить</a>
+        </div>
     {% endfor %}<br>
+    </div>
 
     <a href="/lab5/">Назад</a>
 {% endblock %}
