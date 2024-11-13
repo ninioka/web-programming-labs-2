@@ -284,17 +284,6 @@ def unfavorite(article_id):
     return redirect('/lab5/list')
 
 
-@lab5.route('/lab5/public_articles')
-def public_articles():
-    conn, cur = db_connect()
-
-    cur.execute("SELECT * FROM articles WHERE is_public='t' ORDER BY id ASC;")
-    public_articles = cur.fetchall()
-    db_close(conn, cur)
-
-    return render_template('/lab5/public_articles.html', public_articles=public_articles)
-
-
 @lab5.route('/lab5/public/<int:article_id>', methods=['POST'])
 def public(article_id):
     login = session.get('login')
@@ -339,3 +328,15 @@ def private(article_id):
     db_close(conn, cur)
 
     return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/public_articles')
+def public_articles():
+    conn, cur = db_connect()
+
+    cur.execute("SELECT * FROM articles WHERE is_public='t' ORDER BY id ASC;")
+    public_articles = cur.fetchall()
+    db_close(conn, cur)
+
+    return render_template('/lab5/public_articles.html', public_articles=public_articles)
+
