@@ -30,7 +30,7 @@ function getOfficeList() {
             li.innerText = office.number + ": " + (office.tenant || 'свободен') + ", Стоимость: " + office.price + " ₽";
 
             const bookingButton = document.createElement('button');
-            bookingButton.innerText = 'зарезервировать';
+            bookingButton.innerText = 'Зарезервировать';
             bookingButton.onclick = function() {booking(office.number)};
             li.appendChild(bookingButton);
 
