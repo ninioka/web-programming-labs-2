@@ -20,7 +20,7 @@ function getOfficeList() {
         return response.json()
     })
     .then(function(data) {
-        const office_list = data.result;
+        const office_list = data.result.offices;
         const ul = document.getElementById('office-list');
         ul.innerHTML = '';
         let totalCost = 0; 
