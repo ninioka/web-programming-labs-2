@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, current_app
+from flask import Blueprint, render_template, request, make_response, session, current_app
 
 lab7 = Blueprint('lab7', __name__)
 
@@ -90,6 +90,7 @@ def del_film(id):
     del films[id]
     return '', 204
 
+
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
     if id < 0 or id >= len(films):
@@ -97,3 +98,12 @@ def put_film(id):
     film = request.get_json()
     films[id] = film
     return films[id]
+
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    film = request.get_json() 
+    if not film:
+        return make_response('Нет данных о фильме', 400)
+    films.append(film)  
+    return (len(films) - 1), 201
