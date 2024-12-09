@@ -22,6 +22,18 @@
     .error-message {
         color: rgb(173, 11, 11);
     }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border: 2px solid #4b2818;
+    }
+    th {
+        background-color: #4b2818;
+        color: rgb(218, 188, 188);
+    }
+    tr:hover {
+        background-color: rgb(206, 147, 147);
+    }
 </style>
 {% endblock %}
 
@@ -55,7 +67,7 @@
         </label><br>
 
         <label>
-            Название фильма на оригинальном языке<br>
+            Название фильма на оригинальном языке:<br>
             <i style="font-size: 16px;">(если фильм русский, то оставьте пустым):</i><br>
             <input type="text" id="title">
         </label><br>
