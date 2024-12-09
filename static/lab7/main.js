@@ -17,7 +17,7 @@ function fillFilmList() {
             tdTitleRus.innerText = films[i].title_ru;
                 
             let titleElement = document.createElement('i');
-            titleElement.style.fontSize = '14pt';
+            titleElement.style.fontSize = '12pt';
             titleElement.innerText = films[i].title;
             tdTitle.appendChild(titleElement);
 
