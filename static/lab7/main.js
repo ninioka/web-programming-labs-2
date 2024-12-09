@@ -1,12 +1,12 @@
 function fillFilmList() {
-    fetch ('/lab7/rest-api/films/')
+    fetch('/lab7/rest-api/films/')
     .then(function (data) {
         return data.json();
     })
     .then(function (films) {
         let tbody = document.getElementById('film-list');
         tbody.innerHTML = '';
-        for(let i = 0; i < films.length; i++) {
+        for(let i = 0; i<films.length; i++) {
             let tr = document.createElement('tr');
 
             let tdTitle = document.createElement('td');
@@ -15,6 +15,7 @@ function fillFilmList() {
             let tdActions = document.createElement('td');
 
             tdTitleRus.innerText = films[i].title_ru;
+                
             let titleElement = document.createElement('i');
             titleElement.style.color = '#e0b8c2';
             titleElement.innerText = films[i].title;
@@ -24,33 +25,33 @@ function fillFilmList() {
 
             let editButton = document.createElement('button');
             editButton.innerText = "Редактировать";
-            editButton.onclick = function () {
-                editFilm(i);
+            editButton.onclick = function() {
+                editFilm(films[i].id);
             };
 
             let delButton = document.createElement('button');
-            delButton.innerText = "Удалить";
+            delButton.innerText = "Удалить"; 
             delButton.onclick = function() {
-                deleteFilm(i, films[i].title_ru);
+                deleteFilm(films[i].id, films[i].title_ru); 
             };
 
             tdActions.append(editButton); 
-            tdActions.append(delButton);
+            tdActions.append(delButton); 
 
-            tr.append(tdTitle);
             tr.append(tdTitleRus);
+            tr.append(tdTitle);            
             tr.append(tdYear);
             tr.append(tdActions);
 
             tbody.append(tr);
         }
-    });
+    })
 }
 
 function deleteFilm(id, title) {
     if(! confirm(`Вы точно хотите удалить фильм "${title}"?`))
         return;
-    
+
     fetch(`/lab7/rest-api/films/${id}`, {method: 'DELETE'}) 
         .then(function () {
             fillFilmList();
@@ -58,8 +59,7 @@ function deleteFilm(id, title) {
 }
 
 function showModal() {
-    document.getElementById('description-error').innerText = '';
-    document.querySelector('div.modal').style.display = 'block';
+    document.querySelector('div.modal').style.display = 'block';    
 }
 function hideModal() {
     document.querySelector('div.modal').style.display = 'none';
@@ -80,15 +80,16 @@ function addFilm() {
 
 function sendFilm() {
     const id = document.getElementById('id').value;
+
     const film = {
-        title: document.getElementById('title').value || "",
         title_ru: document.getElementById('title_ru').value,
-        year: document.getElementById('year').value,
-        description: document.getElementById('description').value
+        title: document.getElementById('title').value || "",        
+        year: parseInt(document.getElementById('year').value),
+        description: document.getElementById('description').value 
     }
 
-    const url = `/lab7/rest-api/films/${id}`;
-    const method = id === '' ? 'POST': 'PUT';
+    const url = `/lab7/rest-api/films/${id}/`;
+    const method = id === '' ? 'POST' : 'PUT';
 
     fetch(url, {
         method: method,
@@ -99,13 +100,23 @@ function sendFilm() {
         if(resp.ok) {
             fillFilmList();
             hideModal();
-            return {};
-        }
+            return{};
+        }        
         return resp.json();
     })
     .then(function(errors) {
-        document.getElementById('description-error').innerText = errors.description;
-    });
+        document.getElementById('title_ru-error').innerText = '';
+        document.getElementById('title-error').innerText = '';        
+        document.getElementById('year-error').innerText = '';
+        document.getElementById('description-error').innerText = '';
+
+        for (const key in errors) {
+            const errorElement = document.getElementById(`${key}-error`);
+            if (errorElement) {
+                errorElement.innerText = errors[key];
+            }
+        }
+    })
 }
 
 function editFilm(id) {
