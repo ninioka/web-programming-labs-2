@@ -147,7 +147,7 @@ def add_film():
         errors['title'] = 'Заполните название!'
     
 
-    if film['year'] == '' or not isinstance(film['year'], (int, float)):
+    if film['year'] == '' or not isinstance(film['year'], (int)):
         errors['year'] = 'Заполните год выпуска!'
     else:
         current_year = datetime.now().year
