@@ -1,5 +1,9 @@
 from flask import Flask, url_for, redirect, render_template, request
 import os
+from os import path
+from flask_sqlalchemy import SQLAlchemy
+from db import db
+
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
@@ -14,6 +18,22 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'Секретно-секретный секрет')
 app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
+
+if app.config['DB_TYPE'] == 'postgres':
+    db_name = 'nina_demchenko_orm'
+    db_user = 'nina_demchenko_orm'
+    db_password = '123'
+    host_ip = '127.0.0.1'
+    host_port = 5432
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = \
+        f'postgresql://{db_user}:{db_password}@{host_ip}:{host_port}/{db_name}'
+else:
+    dir_path = path.dirname(path.realpath(__file__))
+    db_path = path.join(dir_path, "nina_demchenko_orm.db")
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
+db.init_app(app)
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
