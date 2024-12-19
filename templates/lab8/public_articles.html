@@ -3,7 +3,7 @@
 {% block lab %}Лабораторная работа 8{% endblock %}
 
 {% block main %}
-    <h1>Список статей</h1>
+    <h1>Публичные статьи</h1>
 
     <a href="/lab8/">Назад</a>
 
@@ -15,14 +15,6 @@
     {% for article in articles %}
         <h2>{{ article.title }}</h2>
         <blockquote>{{ article.article_text }}</blockquote>
-
-        <div style="text-align: center;">
-            <a href="/lab8/edit/{{ article.id }}">Редактировать</a>
-        </div>
-
-        <form action="/lab8/delete/{{ article.id }}" method="post" style="text-align: center;">
-            <button type="submit">Удалить</button>
-        </form>
     {% endfor %}
 
 {% endblock %}
