@@ -4,7 +4,13 @@
 
 {% block main %}
     <h1>База знаний</h1>
-    <div>Anonymous</div>
+    <div>
+        {% if current_user.is_authenticated %}
+        <div>Пользователь: {{ current_user.login }}</div>
+        {% else %}
+            <div>Пользователь: Anonymous</div>
+        {% endif %}
+    </div>
     <ol>
         <li>
             <a href="/lab8/login">Вход</a>
@@ -19,4 +25,7 @@
             <a href="/lab8/create">Создать статью</a>
         </li>
     </ol>
+
+    <a href="/lab8/logout">Выход</a>
+
 {% endblock %}
