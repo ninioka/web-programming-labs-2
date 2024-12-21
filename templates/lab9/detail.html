@@ -4,6 +4,12 @@
 
 {% block script %}
     <style>
+        button {
+            margin-left: 42%;
+        }
+        form {
+            text-align: left;
+        }
         body {
             color: #8e0413;
             background-color: #b6c197;
@@ -56,6 +62,7 @@
             background-image: url('/static/lab9/еловая ветка лево.png');
             left: 20px;
         }
+
         body::after {
             background-image: url('/static/lab9/еловая ветка право.png');
             right: 20px;
@@ -64,14 +71,18 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Поздравление!</h1>
-    <div class="ticket">
-        <p>Как вас зовут?</p>
-        <form method="post">
-            <input type="text" name="name" placeholder="Меня зовут..."><br>
-            <div class="error">{{ error }}</div>
-
-            <button type="submit">Далее</button>
-        </form>
-    </div>
+<h1>Поздравление!</h1>
+<div class="ticket">
+    <p>Уточните детали</p>
+    <form method="post">
+        {% if session['preference'] == 'delicious' %}
+            <label><input type="radio" name="detail" value="sweet"> Сладкое</label>
+            <label><input type="radio" name="detail" value="savory"> Сытное</label>
+        {% else %}
+            <label><input type="radio" name="detail" value="beautiful"> Красивое</label>
+            <label><input type="radio" name="detail" value="secret"> Секретное</label>
+        {% endif %}
+        <button type="submit">Далее</button>
+    </form>
+</div>
 {% endblock %}

@@ -56,6 +56,7 @@
             background-image: url('/static/lab9/еловая ветка лево.png');
             left: 20px;
         }
+
         body::after {
             background-image: url('/static/lab9/еловая ветка право.png');
             right: 20px;
@@ -66,9 +67,9 @@
 {% block main %}
     <h1>Поздравление!</h1>
     <div class="ticket">
-        <p>Как вас зовут?</p>
+        <p>Сколько вам лет?</p>
         <form method="post">
-            <input type="text" name="name" placeholder="Меня зовут..."><br>
+            <input type="number" name="age" placeholder="Мне..."><br>
             <div class="error">{{ error }}</div>
 
             <button type="submit">Далее</button>

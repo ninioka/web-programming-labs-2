@@ -4,6 +4,12 @@
 
 {% block script %}
     <style>
+        button {
+            margin-left: 42%;
+        }
+        form {
+            text-align: left;
+        }
         body {
             color: #8e0413;
             background-color: #b6c197;
@@ -66,11 +72,10 @@
 {% block main %}
     <h1>Поздравление!</h1>
     <div class="ticket">
-        <p>Как вас зовут?</p>
+        <p>Кто вы?</p>
         <form method="post">
-            <input type="text" name="name" placeholder="Меня зовут..."><br>
-            <div class="error">{{ error }}</div>
-
+            <label><input type="radio" name="gender" value="male"> Мужчина</label>
+            <label><input type="radio" name="gender" value="female"> Женщина</label><br>
             <button type="submit">Далее</button>
         </form>
     </div>

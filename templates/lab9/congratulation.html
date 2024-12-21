@@ -4,6 +4,15 @@
 
 {% block script %}
     <style>
+        h3 {
+            text-align: center;
+        }
+        p {
+            text-align: center;
+        }
+        img {
+            width: 30%;
+        }
         body {
             color: #8e0413;
             background-color: #b6c197;
@@ -65,13 +74,7 @@
 
 {% block main %}
     <h1>Поздравление!</h1>
-    <div class="ticket">
-        <p>Как вас зовут?</p>
-        <form method="post">
-            <input type="text" name="name" placeholder="Меня зовут..."><br>
-            <div class="error">{{ error }}</div>
-
-            <button type="submit">Далее</button>
-        </form>
-    </div>
+    <h3>{{ greeting }}</h3>
+    <p>{{ gift }}</p>
+    <img src="/static/lab9/{{ image }}" alt="Подарок">
 {% endblock %}
