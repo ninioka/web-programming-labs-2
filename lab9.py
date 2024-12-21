@@ -13,6 +13,9 @@ def lab():
         session['name'] = name
         return redirect('/lab9/age')
     
+    if 'name' in session and 'age' in session and 'gender' in session and 'preference' in session and 'detail' in session:
+        return redirect('/lab9/congratulation')
+    
     return render_template('/lab9/lab9.html')
 
 
@@ -27,6 +30,9 @@ def age():
         session['age'] = age
         return redirect('/lab9/gender')
     
+    if 'name' in session and 'age' in session and 'gender' in session and 'preference' in session and 'detail' in session:
+        return redirect('/lab9/congratulation')
+    
     return render_template('/lab9/age.html')
 
 
@@ -37,6 +43,9 @@ def gender():
         
         session['gender'] = gender
         return redirect('/lab9/preference')
+    
+    if 'name' in session and 'age' in session and 'gender' in session and 'preference' in session and 'detail' in session:
+        return redirect('/lab9/congratulation')
     
     return render_template('/lab9/gender.html')
 
@@ -49,6 +58,9 @@ def preference():
         session['preference'] = preference
         return redirect('/lab9/detail')
     
+    if 'name' in session and 'age' in session and 'gender' in session and 'preference' in session and 'detail' in session:
+        return redirect('/lab9/congratulation')
+    
     return render_template('/lab9/preference.html')
 
 @lab9.route('/lab9/detail', methods=['GET', 'POST'])
@@ -57,6 +69,9 @@ def detail():
         detail = request.form.get('detail')
 
         session['detail'] = detail
+        return redirect('/lab9/congratulation')
+    
+    if 'name' in session and 'age' in session and 'gender' in session and 'preference' in session and 'detail' in session:
         return redirect('/lab9/congratulation')
     
     return render_template('/lab9/detail.html')
@@ -99,3 +114,13 @@ def congratulation():
             image = "елка.png"
 
     return render_template('/lab9/congratulation.html', greeting=greeting, gift=gift, image=image)
+
+
+@lab9.route('/lab9/reset', methods=['GET'])
+def reset():
+    session.pop('name', None)
+    session.pop('age', None)
+    session.pop('gender', None)
+    session.pop('preference', None)
+    session.pop('detail', None)
+    return redirect('/lab9/')

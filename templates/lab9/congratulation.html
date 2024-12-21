@@ -31,6 +31,8 @@
             border-color: #8e0413;
             color: #8e0413;
             box-shadow: 4px 3px 3px rgba(96, 49, 44, 0.3);
+            display: block;
+            margin: auto;
         }
         .ticket {
             border: 3px solid #8e0413;
@@ -77,4 +79,9 @@
     <h3>{{ greeting }}</h3>
     <p>{{ gift }}</p>
     <img src="/static/lab9/{{ image }}" alt="Подарок">
+    <div>
+        <a href="/lab9/reset">
+            <button>Создать новую открытку</button>
+        </a>
+    </div>
 {% endblock %}
