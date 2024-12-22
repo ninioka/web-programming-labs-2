@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block lab %}Расчетно-графическое задание{% endblock %}
+
+{% block main %}
+    <h1>Редактирование пользователя</h1>
+    <form method="post">
+        <label>Логин: <input type="text" name="username" value="{{ user.username }}"></label><br>
+        <label>Новый пароль: <input type="password" name="password"></label><br>
+        <button type="submit">Сохранить</button>
+    </form>
+    <a href="/rgz/admin">Назад</a>
+{% endblock %}

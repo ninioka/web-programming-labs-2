@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block lab %}Расчетно-графическое задание{% endblock %}
+
+
+{% block main %}
+    <h1>Регистрация</h1>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+        <label>Логин: <input type="text" name="username"></label><br>
+        <label>Пароль: <input type="password" name="password"></label><br>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <a href="/rgz/">Назад</a>
+{% endblock %}

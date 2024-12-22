@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block lab %}Расчетно-графическое задание{% endblock %}
+
+{% block main %}
+    <h1>Панель администратора</h1>
+    <h2>Список пользователей:</h2>
+    <ul>
+        {% for user in users %}
+        <li>
+            {{ user.username }}
+            <form action="{{ url_for('rgz.admin_delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                <button type="submit">Удалить</button>
+            </form>
+            <a href="{{ url_for('rgz.admin_edit_user', user_id=user.id) }}">Редактировать</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/rgz/logout">Выйти</a>
+{% endblock %}
