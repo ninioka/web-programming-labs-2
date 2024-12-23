@@ -2,9 +2,16 @@
 
 {% block lab %}Расчетно-графическое задание{% endblock %}
 
+{% block script %}
+    <style>
+    </style>
+{% endblock %}
+
 
 {% block main %}
     <h1>Добро пожаловать в мессенджер!</h1>
-    <a href="/rgz/login">Войти</a>
-    <a href="/rgz/register">Зарегистрироваться</a>
+    <div class="ticket">
+        <a href="/rgz/login">Войти</a><br>
+        <a href="/rgz/register">Зарегистрироваться</a>
+    </div>
 {% endblock %}

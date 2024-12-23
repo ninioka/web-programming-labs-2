@@ -2,23 +2,103 @@
 
 {% block lab %}Расчетно-графическое задание{% endblock %}
 
+{% block script %}
+    <style>
+        .chat-container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgb(209, 158, 158);
+            border: 3px solid rgb(71, 20, 20);
+            border-radius: 40px;
+            box-shadow: 4px 3px 3px rgba(96, 49, 44, 0.3);
+        }
+        .message-list {
+            padding: 0;
+            margin: 0;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .message-item {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            position: relative;
+        }
+        .message-left {
+            background-color: rgb(201, 133, 133);
+            color: rgb(71, 20, 20);
+        }
+        .message-right {
+            justify-content: end;
+            background-color: rgb(167, 80, 80);
+            color: rgb(71, 20, 20);
+        }
+        .message-content {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        button {
+            cursor: pointer;
+            margin: 15px;
+            font-size: 18px;
+            background-color: rgb(206, 147, 147);
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: rgb(71, 20, 20);
+            color: rgb(71, 20, 20);
+            box-shadow: 4px 3px 3px rgba(96, 49, 44, 0.3);
+        }
+        button:hover {
+            border: 2px solid;
+            border-radius: 50px;
+        }
+        .message-input {
+            width: 97%;
+            margin: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid rgb(71, 20, 20);
+            border-radius: 10px;
+            font-size: 16pt;
+            background-color: rgb(218, 188, 188);
+            color: rgb(71, 20, 20);
+        }
+        div {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
 {% block main %}
-    <h1>Чат с {{ recipient.username }}</h1>
-    <ul>
-        {% for message in messages %}
-        <li>
-            <strong>{{ message.sender_username }}:</strong> {{ message.message_text }}
-            <form action="/rgz/delete_message/{{ message.id }}" method="post" style="display:inline;">
-                <button type="submit">Удалить</button>
-            </form>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="chat-container">
+        <h1>Чат с {{ recipient.username }}</h1>
 
-    <form action="{{ url_for('rgz.chat', recipient_id=recipient.id) }}" method="post">
-        <label>Сообщение: <textarea name="message_text"></textarea></label><br>
-        <button type="submit">Отправить</button>
-    </form>
+        <ul class="message-list">
+            {% for message in messages %}
+            <li class="message-item {% if message.sender_id == session.user_id %}message-right{% else %}message-left{% endif %}">
 
-    <a href="/rgz/dashboard">Назад</a>
+                <div class="message-content">
+                    {{ message.sender_username }}: {{ message.message_text }}
+                </div>
+
+                <form action="/rgz/delete_message/{{ message.id }}" method="post">
+                    <button type="submit">Удалить</button>
+                </form>
+
+            </li>
+            {% endfor %}
+        </ul>
+
+        <form action="/rgz/chat/{{ recipient.id }}" method="post">
+            <textarea name="message_text" placeholder="Введите ваше сообщение" class="message-input"></textarea>
+            
+            <button type="submit">Отправить</button>
+        </form>
+
+        <div>
+            <a href="/rgz/dashboard">Назад</a>
+        </div>
+    </div>
 {% endblock %}

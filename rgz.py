@@ -4,9 +4,10 @@ from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from os import path
+import re
+from flask import jsonify
 
 rgz = Blueprint('rgz', __name__)
-
 
 def db_connect():
     if current_app.config['DB_TYPE'] == 'postgres':
@@ -19,18 +20,20 @@ def db_connect():
         cur = conn.cursor(cursor_factory=RealDictCursor)
     else:
         dir_path = path.dirname(path.realpath(__file__))
-        db_path = path.join(dir_path, "database.db")
+        db_path = path.join(dir_path, "database_rgz.db")
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
 
     return conn, cur
 
-
 def db_close(conn, cur):
     conn.commit()
     cur.close()
     conn.close()
+
+
+VALID_USERNAME_PASSWORD_PATTERN = re.compile(r'^[a-zA-Z0-9\.\-_!@#$%^&*()+=?<>,;:"\'\[\]{}|~`]+$')
 
 
 @rgz.route('/rgz/')
@@ -46,8 +49,15 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
+        # Проверка на пустые поля
         if not username or not password:
             return render_template('/rgz/register.html', error='Заполните все поля')
+
+        # Проверка на валидность логина и пароля
+        if not VALID_USERNAME_PASSWORD_PATTERN.match(username):
+            return render_template('/rgz/register.html', error='Логин содержит недопустимые символы')
+        if not VALID_USERNAME_PASSWORD_PATTERN.match(password):
+            return render_template('/rgz/register.html', error='Пароль содержит недопустимые символы')
 
         conn, cur = db_connect()
         cur.execute("SELECT * FROM users WHERE username=%s", (username,))
@@ -57,12 +67,13 @@ def register():
             return render_template('/rgz/register.html', error='Пользователь уже существует')
 
         hashed_password = generate_password_hash(password)
-        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_password))
+        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s) RETURNING id", (username, hashed_password))
+        user_id = cur.fetchone()['id']
         conn.commit()
-        conn.close()
+        db_close(conn, cur)
 
         # Автоматический вход после регистрации
-        session['user_id'] = user['id'] if user else None
+        session['user_id'] = user_id
         session['username'] = username
         return redirect('/rgz/dashboard')
 
@@ -87,7 +98,7 @@ def login():
 
         session['user_id'] = user['id']
         session['username'] = user['username']
-        conn.close()
+        db_close(conn, cur)
 
         return redirect('/rgz/dashboard')
 
@@ -103,7 +114,7 @@ def dashboard():
     cur.execute("SELECT * FROM users WHERE id != %s", (session['user_id'],))
     users = cur.fetchall()
 
-    conn.close()
+    db_close(conn, cur)
 
     return render_template('/rgz/dashboard.html', users=users)
 
@@ -123,7 +134,7 @@ def chat(recipient_id):
         cur.execute("INSERT INTO messages (sender_id, recipient_id, message_text) VALUES (%s, %s, %s)",
                     (session['user_id'], recipient_id, message_text))
         conn.commit()
-        conn.close()
+        db_close(conn, cur)
 
         return redirect(url_for('rgz.chat', recipient_id=recipient_id))
 
@@ -140,7 +151,7 @@ def chat(recipient_id):
     cur.execute("SELECT id, username FROM users WHERE id = %s", (recipient_id,))
     recipient = cur.fetchone()
 
-    conn.close()
+    db_close(conn, cur)
 
     return render_template('/rgz/chat.html', messages=messages, recipient=recipient)
 
@@ -154,7 +165,7 @@ def delete_message(message_id):
     cur.execute("DELETE FROM messages WHERE id=%s AND (sender_id=%s OR recipient_id=%s)",
                 (message_id, session['user_id'], session['user_id']))
     conn.commit()
-    conn.close()
+    db_close(conn, cur)
 
     return redirect(request.referrer)
 
@@ -174,7 +185,7 @@ def delete_account():
     conn, cur = db_connect()
     cur.execute("DELETE FROM users WHERE id=%s", (session['user_id'],))
     conn.commit()
-    conn.close()
+    db_close(conn, cur)
 
     session.pop('user_id', None)
     session.pop('username', None)
@@ -190,7 +201,7 @@ def admin():
     conn, cur = db_connect()
     cur.execute("SELECT * FROM users")
     users = cur.fetchall()
-    conn.close()
+    db_close(conn, cur)
 
     return render_template('/rgz/admin.html', users=users)
 
@@ -203,7 +214,7 @@ def admin_delete_user(user_id):
     conn, cur = db_connect()
     cur.execute("DELETE FROM users WHERE id=%s", (user_id,))
     conn.commit()
-    conn.close()
+    db_close(conn, cur)
 
     return redirect('/rgz/admin')
 
@@ -216,21 +227,43 @@ def admin_edit_user(user_id):
     conn, cur = db_connect()
 
     if request.method == 'POST':
-        new_username = request.form['username']
-        new_password = request.form['password']
+        new_username = request.json.get('username')
+        new_password = request.json.get('password')
+
+        # Проверка на пустые поля
+        if not new_username and not new_password:
+            return jsonify({'success': False, 'error': 'Заполните хотя бы одно поле'}), 400
+
+        # Проверка на валидность логина и пароля
+        if new_username and not VALID_USERNAME_PASSWORD_PATTERN.match(new_username):
+            return jsonify({'success': False, 'error': 'Логин содержит недопустимые символы'}), 400
+        if new_password and not VALID_USERNAME_PASSWORD_PATTERN.match(new_password):
+            return jsonify({'success': False, 'error': 'Пароль содержит недопустимые символы'}), 400
 
         if new_username:
-            cur.execute("UPDATE users SET username=%s WHERE id=%s", (new_username, user_id))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("UPDATE users SET username=%s WHERE id=%s", (new_username, user_id))
+            else:
+                cur.execute("UPDATE users SET username=? WHERE id=?", (new_username, user_id))
         if new_password:
             hashed_password = generate_password_hash(new_password)
-            cur.execute("UPDATE users SET password=%s WHERE id=%s", (hashed_password, user_id))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("UPDATE users SET password=%s WHERE id=%s", (hashed_password, user_id))
+            else:
+                cur.execute("UPDATE users SET password=? WHERE id=?", (hashed_password, user_id))
 
         conn.commit()
-        conn.close()
-        return redirect('/rgz/admin')
+        db_close(conn, cur)
+        return jsonify({'success': True})
 
-    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    else:
+        cur.execute("SELECT * FROM users WHERE id=?", (user_id,))
     user = cur.fetchone()
-    conn.close()
+    db_close(conn, cur)
 
-    return render_template('/rgz/edit_user.html', user=user)
+    return jsonify({
+        'id': user['id'],
+        'username': user['username']
+    })

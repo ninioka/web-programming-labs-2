@@ -4,7 +4,8 @@
 
 {% block main %}
     <h1>Добро пожаловать, {{ session.username }}!</h1>
-    <h2>Список пользователей:</h2>
+    
+    <p>Список пользователей:</p>
     <ul>
         {% for user in users %}
         <li>
@@ -13,13 +14,13 @@
         {% endfor %}
     </ul>
 
-    <a href="/rgz/logout">Выйти</a>
-
-    {% if session.username == 'admin' %}
-        <a href="/rgz/admin">Администратор</a>
-    {% endif %}
+    <a href="/rgz/logout">Выйти</a><br>
 
     <form action="/rgz/delete_account" method="post" style="display:inline;">
         <button type="submit">Удалить аккаунт</button>
-    </form>
+    </form><br>
+
+    {% if session.username == 'admin' %}
+        <a href="/rgz/admin">Панель управления</a><br>
+    {% endif %}
 {% endblock %}
