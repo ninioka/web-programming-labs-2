@@ -340,3 +340,18 @@ def admin_edit_user(user_id):
     db_close(conn, cur)
 
     return render_template('/rgz/admin.html', edit_user=user, users=users)
+
+
+@rgz.route('/rgz/admin/delete_user/<int:user_id>', methods=['POST'])
+def admin_delete_user(user_id):
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("DELETE FROM users WHERE id=%s", (user_id,))
+    else:
+        cur.execute("DELETE FROM users WHERE id=?", (user_id,))
+
+    conn.commit()
+    db_close(conn, cur)
+
+    return redirect('/rgz/admin')
