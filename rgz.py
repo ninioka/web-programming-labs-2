@@ -5,7 +5,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from os import path
 import re
-from flask import jsonify
 
 rgz = Blueprint('rgz', __name__)
 
@@ -49,22 +48,20 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        # Проверка на пустые поля
         if not username or not password:
-            return render_template('/rgz/register.html', error='Заполните все поля')
+            return render_template('/rgz/register.html', error='Заполните все поля!')
 
-        # Проверка на валидность логина и пароля
         if not VALID_USERNAME_PASSWORD_PATTERN.match(username):
-            return render_template('/rgz/register.html', error='Логин содержит недопустимые символы')
+            return render_template('/rgz/register.html', error='Логин содержит недопустимые символы!')
         if not VALID_USERNAME_PASSWORD_PATTERN.match(password):
-            return render_template('/rgz/register.html', error='Пароль содержит недопустимые символы')
+            return render_template('/rgz/register.html', error='Пароль содержит недопустимые символы!')
 
         conn, cur = db_connect()
         cur.execute("SELECT * FROM users WHERE username=%s", (username,))
         user = cur.fetchone()
 
         if user:
-            return render_template('/rgz/register.html', error='Пользователь уже существует')
+            return render_template('/rgz/register.html', error='Пользователь уже существует!')
 
         hashed_password = generate_password_hash(password)
         cur.execute("INSERT INTO users (username, password) VALUES (%s, %s) RETURNING id", (username, hashed_password))
@@ -72,7 +69,6 @@ def register():
         conn.commit()
         db_close(conn, cur)
 
-        # Автоматический вход после регистрации
         session['user_id'] = user_id
         session['username'] = username
         return redirect('/rgz/dashboard')
@@ -87,14 +83,14 @@ def login():
         password = request.form['password']
 
         if not username or not password:
-            return render_template('/rgz/login.html', error='Заполните все поля')
+            return render_template('/rgz/login.html', error='Заполните все поля!')
 
         conn, cur = db_connect()
         cur.execute("SELECT * FROM users WHERE username=%s", (username,))
         user = cur.fetchone()
 
         if not user or not check_password_hash(user['password'], password):
-            return render_template('/rgz/login.html', error='Неверный логин или пароль')
+            return render_template('/rgz/login.html', error='Неверный логин и/или пароль!')
 
         session['user_id'] = user['id']
         session['username'] = user['username']
@@ -109,7 +105,7 @@ def login():
 def dashboard():
     if 'user_id' not in session:
         return redirect('/rgz/login')
-
+    
     conn, cur = db_connect()
     cur.execute("SELECT * FROM users WHERE id != %s", (session['user_id'],))
     users = cur.fetchall()
@@ -158,9 +154,6 @@ def chat(recipient_id):
 
 @rgz.route('/rgz/delete_message/<int:message_id>', methods=['POST'])
 def delete_message(message_id):
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-
     conn, cur = db_connect()
     cur.execute("DELETE FROM messages WHERE id=%s AND (sender_id=%s OR recipient_id=%s)",
                 (message_id, session['user_id'], session['user_id']))
@@ -179,9 +172,6 @@ def logout():
 
 @rgz.route('/rgz/delete_account', methods=['POST'])
 def delete_account():
-    if 'user_id' not in session:
-        return redirect('/rgz/login')
-
     conn, cur = db_connect()
     cur.execute("DELETE FROM users WHERE id=%s", (session['user_id'],))
     conn.commit()
@@ -193,7 +183,7 @@ def delete_account():
     return redirect('/rgz/')
 
 
-@rgz.route('/rgz/admin')
+@rgz.route('/rgz/admin', methods=['GET', 'POST'])
 def admin():
     if 'user_id' not in session or session['username'] != 'admin':
         return redirect('/rgz/login')
@@ -201,69 +191,65 @@ def admin():
     conn, cur = db_connect()
     cur.execute("SELECT * FROM users")
     users = cur.fetchall()
+
+    edit_user = ''
+    if request.method == 'POST':
+
+        edit_user_id = request.form.get('edit_user_id')
+        if edit_user_id:
+            cur.execute("SELECT * FROM users WHERE id=%s", (edit_user_id,))
+            edit_user = cur.fetchone()
+
     db_close(conn, cur)
-
-    return render_template('/rgz/admin.html', users=users)
-
-
-@rgz.route('/rgz/admin/delete_user/<int:user_id>', methods=['POST'])
-def admin_delete_user(user_id):
-    if 'user_id' not in session or session['username'] != 'admin':
-        return redirect('/rgz/login')
-
-    conn, cur = db_connect()
-    cur.execute("DELETE FROM users WHERE id=%s", (user_id,))
-    conn.commit()
-    db_close(conn, cur)
-
-    return redirect('/rgz/admin')
+    return render_template('/rgz/admin.html', users=users, edit_user=edit_user)
 
 
 @rgz.route('/rgz/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
 def admin_edit_user(user_id):
-    if 'user_id' not in session or session['username'] != 'admin':
-        return redirect('/rgz/login')
-
     conn, cur = db_connect()
 
     if request.method == 'POST':
-        new_username = request.json.get('username')
-        new_password = request.json.get('password')
+        new_username = request.form.get('username')
+        new_password = request.form.get('password')
 
-        # Проверка на пустые поля
+        error = []
+
         if not new_username and not new_password:
-            return jsonify({'success': False, 'error': 'Заполните хотя бы одно поле'}), 400
+            error = 'Заполните хотя бы одно поле!'
+        elif new_username and not VALID_USERNAME_PASSWORD_PATTERN.match(new_username):
+            error = 'Логин содержит недопустимые символы!'
+        elif new_password and not VALID_USERNAME_PASSWORD_PATTERN.match(new_password):
+            error = 'Пароль содержит недопустимые символы!'
+        elif new_username:
+            cur.execute("SELECT * FROM users WHERE username=%s AND id != %s", (new_username, user_id))
 
-        # Проверка на валидность логина и пароля
-        if new_username and not VALID_USERNAME_PASSWORD_PATTERN.match(new_username):
-            return jsonify({'success': False, 'error': 'Логин содержит недопустимые символы'}), 400
-        if new_password and not VALID_USERNAME_PASSWORD_PATTERN.match(new_password):
-            return jsonify({'success': False, 'error': 'Пароль содержит недопустимые символы'}), 400
+            existing_user = cur.fetchone()
+
+            if existing_user:
+                error = 'Пользователь с таким логином уже существует!'
+
+        if error:
+            cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+            user = cur.fetchone()
+            cur.execute("SELECT * FROM users")
+            users = cur.fetchall()
+            db_close(conn, cur)
+            return render_template('/rgz/admin.html', edit_user=user, error=error, users=users)
 
         if new_username:
-            if current_app.config['DB_TYPE'] == 'postgres':
-                cur.execute("UPDATE users SET username=%s WHERE id=%s", (new_username, user_id))
-            else:
-                cur.execute("UPDATE users SET username=? WHERE id=?", (new_username, user_id))
+            cur.execute("UPDATE users SET username=%s WHERE id=%s", (new_username, user_id))
         if new_password:
             hashed_password = generate_password_hash(new_password)
-            if current_app.config['DB_TYPE'] == 'postgres':
-                cur.execute("UPDATE users SET password=%s WHERE id=%s", (hashed_password, user_id))
-            else:
-                cur.execute("UPDATE users SET password=? WHERE id=?", (hashed_password, user_id))
+            cur.execute("UPDATE users SET password=%s WHERE id=%s", (hashed_password, user_id))
 
         conn.commit()
         db_close(conn, cur)
-        return jsonify({'success': True})
+        return redirect('/rgz/admin')
 
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
-    else:
-        cur.execute("SELECT * FROM users WHERE id=?", (user_id,))
+    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
     user = cur.fetchone()
+    cur.execute("SELECT * FROM users")
+    users = cur.fetchall()
     db_close(conn, cur)
 
-    return jsonify({
-        'id': user['id'],
-        'username': user['username']
-    })
+    return render_template('/rgz/admin.html', edit_user=user, users=users)
