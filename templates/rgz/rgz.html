@@ -4,14 +4,20 @@
 
 {% block script %}
     <style>
+        button {
+            width: 50%;
+        }
     </style>
 {% endblock %}
-
 
 {% block main %}
     <h1>Добро пожаловать в мессенджер!</h1>
     <div class="ticket">
-        <a href="/rgz/login">Войти</a><br>
-        <a href="/rgz/register">Зарегистрироваться</a>
+        <form action="/rgz/login">
+            <button type="submit">Вход</button>
+        </form>
+        <form action="/rgz/register">
+            <button type="submit">Регистрация</button>
+        </form>
     </div>
 {% endblock %}

@@ -2,6 +2,14 @@
 
 {% block lab %}Расчетно-графическое задание{% endblock %}
 
+{% block script %}
+    <style>
+        button {
+            width: 11%;
+        }
+    </style>
+{% endblock %}
+
 {% block main %}
     <h1>Добро пожаловать, {{ session.username }}!</h1>
     
@@ -14,13 +22,15 @@
         {% endfor %}
     </ul>
 
-    <a href="/rgz/logout">Выйти</a><br>
-
-    <form action="/rgz/delete_account" method="post" style="display:inline;">
-        <button type="submit">Удалить аккаунт</button>
-    </form><br>
-
     {% if session.username == 'admin' %}
-        <a href="/rgz/admin">Панель управления</a><br>
+        <a href="/rgz/admin">Панель управления</a>
     {% endif %}
+
+    <form action="/rgz/logout">
+        <button type="submit">Выйти</button>
+    </form>
+
+    <form action="/rgz/delete_account" method="post">
+        <button type="submit">Удалить аккаунт</button>
+    </form>
 {% endblock %}

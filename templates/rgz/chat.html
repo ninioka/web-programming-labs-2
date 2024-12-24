@@ -3,6 +3,12 @@
 {% block lab %}Расчетно-графическое задание{% endblock %}
 
 {% block script %}
+    <script>
+        window.onload = function() {
+            const messageList = document.querySelector('.message-list');
+            messageList.scrollTop = messageList.scrollHeight;
+        };
+    </script>
     <style>
         .chat-container {
             width: 800px;

@@ -57,15 +57,28 @@ def register():
             return render_template('/rgz/register.html', error='Пароль содержит недопустимые символы!')
 
         conn, cur = db_connect()
-        cur.execute("SELECT * FROM users WHERE username=%s", (username,))
+
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("SELECT * FROM users WHERE username=%s", (username,))
+        else:
+            cur.execute("SELECT * FROM users WHERE username=?", (username,))
+
         user = cur.fetchone()
 
         if user:
             return render_template('/rgz/register.html', error='Пользователь уже существует!')
 
         hashed_password = generate_password_hash(password)
-        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s) RETURNING id", (username, hashed_password))
-        user_id = cur.fetchone()['id']
+
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("INSERT INTO users (username, password) VALUES (%s, %s) RETURNING id", (username, hashed_password))
+        else:
+            cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
+            user_id = cur.lastrowid
+
+        if current_app.config['DB_TYPE'] == 'postgres':
+            user_id = cur.fetchone()['id']
+
         conn.commit()
         db_close(conn, cur)
 
@@ -86,7 +99,12 @@ def login():
             return render_template('/rgz/login.html', error='Заполните все поля!')
 
         conn, cur = db_connect()
-        cur.execute("SELECT * FROM users WHERE username=%s", (username,))
+
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("SELECT * FROM users WHERE username=%s", (username,))
+        else:
+            cur.execute("SELECT * FROM users WHERE username=?", (username,))
+
         user = cur.fetchone()
 
         if not user or not check_password_hash(user['password'], password):
@@ -107,7 +125,12 @@ def dashboard():
         return redirect('/rgz/login')
     
     conn, cur = db_connect()
-    cur.execute("SELECT * FROM users WHERE id != %s", (session['user_id'],))
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users WHERE id != %s", (session['user_id'],))
+    else:
+        cur.execute("SELECT * FROM users WHERE id != ?", (session['user_id'],))
+
     users = cur.fetchall()
 
     db_close(conn, cur)
@@ -127,24 +150,45 @@ def chat(recipient_id):
             return redirect(url_for('rgz.chat', recipient_id=recipient_id))
 
         conn, cur = db_connect()
-        cur.execute("INSERT INTO messages (sender_id, recipient_id, message_text) VALUES (%s, %s, %s)",
-                    (session['user_id'], recipient_id, message_text))
+
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("INSERT INTO messages (sender_id, recipient_id, message_text) VALUES (%s, %s, %s)",
+                        (session['user_id'], recipient_id, message_text))
+        else:
+            cur.execute("INSERT INTO messages (sender_id, recipient_id, message_text) VALUES (?, ?, ?)",
+                        (session['user_id'], recipient_id, message_text))
+
         conn.commit()
         db_close(conn, cur)
 
         return redirect(url_for('rgz.chat', recipient_id=recipient_id))
 
     conn, cur = db_connect()
-    cur.execute("""
-        SELECT m.*, u.username AS sender_username
-        FROM messages m
-        JOIN users u ON m.sender_id = u.id
-        WHERE (m.sender_id = %s AND m.recipient_id = %s) OR (m.sender_id = %s AND m.recipient_id = %s)
-        ORDER BY m.id ASC
-    """, (session['user_id'], recipient_id, recipient_id, session['user_id']))
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("""
+            SELECT m.*, u.username AS sender_username
+            FROM messages m
+            JOIN users u ON m.sender_id = u.id
+            WHERE (m.sender_id = %s AND m.recipient_id = %s) OR (m.sender_id = %s AND m.recipient_id = %s)
+            ORDER BY m.id ASC
+        """, (session['user_id'], recipient_id, recipient_id, session['user_id']))
+    else:
+        cur.execute("""
+            SELECT m.*, u.username AS sender_username
+            FROM messages m
+            JOIN users u ON m.sender_id = u.id
+            WHERE (m.sender_id = ? AND m.recipient_id = ?) OR (m.sender_id = ? AND m.recipient_id = ?)
+            ORDER BY m.id ASC
+        """, (session['user_id'], recipient_id, recipient_id, session['user_id']))
+
     messages = cur.fetchall()
 
-    cur.execute("SELECT id, username FROM users WHERE id = %s", (recipient_id,))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id, username FROM users WHERE id = %s", (recipient_id,))
+    else:
+        cur.execute("SELECT id, username FROM users WHERE id = ?", (recipient_id,))
+
     recipient = cur.fetchone()
 
     db_close(conn, cur)
@@ -155,8 +199,14 @@ def chat(recipient_id):
 @rgz.route('/rgz/delete_message/<int:message_id>', methods=['POST'])
 def delete_message(message_id):
     conn, cur = db_connect()
-    cur.execute("DELETE FROM messages WHERE id=%s AND (sender_id=%s OR recipient_id=%s)",
-                (message_id, session['user_id'], session['user_id']))
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("DELETE FROM messages WHERE id=%s AND (sender_id=%s OR recipient_id=%s)",
+                    (message_id, session['user_id'], session['user_id']))
+    else:
+        cur.execute("DELETE FROM messages WHERE id=? AND (sender_id=? OR recipient_id=?)",
+                    (message_id, session['user_id'], session['user_id']))
+
     conn.commit()
     db_close(conn, cur)
 
@@ -173,7 +223,12 @@ def logout():
 @rgz.route('/rgz/delete_account', methods=['POST'])
 def delete_account():
     conn, cur = db_connect()
-    cur.execute("DELETE FROM users WHERE id=%s", (session['user_id'],))
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("DELETE FROM users WHERE id=%s", (session['user_id'],))
+    else:
+        cur.execute("DELETE FROM users WHERE id=?", (session['user_id'],))
+
     conn.commit()
     db_close(conn, cur)
 
@@ -189,15 +244,24 @@ def admin():
         return redirect('/rgz/login')
 
     conn, cur = db_connect()
-    cur.execute("SELECT * FROM users")
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users")
+    else:
+        cur.execute("SELECT * FROM users")
+
     users = cur.fetchall()
 
     edit_user = ''
     if request.method == 'POST':
 
         edit_user_id = request.form.get('edit_user_id')
+
         if edit_user_id:
-            cur.execute("SELECT * FROM users WHERE id=%s", (edit_user_id,))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("SELECT * FROM users WHERE id=%s", (edit_user_id,))
+            else:
+                cur.execute("SELECT * FROM users WHERE id=?", (edit_user_id,))
             edit_user = cur.fetchone()
 
     db_close(conn, cur)
@@ -221,7 +285,10 @@ def admin_edit_user(user_id):
         elif new_password and not VALID_USERNAME_PASSWORD_PATTERN.match(new_password):
             error = 'Пароль содержит недопустимые символы!'
         elif new_username:
-            cur.execute("SELECT * FROM users WHERE username=%s AND id != %s", (new_username, user_id))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("SELECT * FROM users WHERE username=%s AND id != %s", (new_username, user_id))
+            else:
+                cur.execute("SELECT * FROM users WHERE username=? AND id != ?", (new_username, user_id))
 
             existing_user = cur.fetchone()
 
@@ -229,26 +296,46 @@ def admin_edit_user(user_id):
                 error = 'Пользователь с таким логином уже существует!'
 
         if error:
-            cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+            else:
+                cur.execute("SELECT * FROM users WHERE id=?", (user_id,))
             user = cur.fetchone()
-            cur.execute("SELECT * FROM users")
+
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("SELECT * FROM users")
+            else:
+                cur.execute("SELECT * FROM users")
             users = cur.fetchall()
             db_close(conn, cur)
             return render_template('/rgz/admin.html', edit_user=user, error=error, users=users)
 
         if new_username:
-            cur.execute("UPDATE users SET username=%s WHERE id=%s", (new_username, user_id))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("UPDATE users SET username=%s WHERE id=%s", (new_username, user_id))
+            else:
+                cur.execute("UPDATE users SET username=? WHERE id=?", (new_username, user_id))
         if new_password:
             hashed_password = generate_password_hash(new_password)
-            cur.execute("UPDATE users SET password=%s WHERE id=%s", (hashed_password, user_id))
+            if current_app.config['DB_TYPE'] == 'postgres':
+                cur.execute("UPDATE users SET password=%s WHERE id=%s", (hashed_password, user_id))
+            else:
+                cur.execute("UPDATE users SET password=? WHERE id=?", (hashed_password, user_id))
 
         conn.commit()
         db_close(conn, cur)
         return redirect('/rgz/admin')
 
-    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    else:
+        cur.execute("SELECT * FROM users WHERE id=?", (user_id,))
     user = cur.fetchone()
-    cur.execute("SELECT * FROM users")
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users")
+    else:
+        cur.execute("SELECT * FROM users")
     users = cur.fetchall()
     db_close(conn, cur)
 

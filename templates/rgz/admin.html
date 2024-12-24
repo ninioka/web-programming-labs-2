@@ -2,44 +2,6 @@
 
 {% block lab %}Расчетно-графическое задание{% endblock %}
 
-{% block main %}
-    <h1>Панель администратора</h1>
-    <h2>Управление списком пользователей:</h2>
-    <table id="user-list">
-        {% for user in users %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>
-                <button class="edit-user-btn" data-user-id="{{ user.id }}">Редактировать</button>
-                <form action="{{ url_for('rgz.admin_delete_user', user_id=user.id) }}" method="post" style="display:inline;">
-                    <button type="submit">Удалить</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <div id="edit-user-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-
-            <span class="close" onclick="hideModal()"></span>
-
-            <p>Редактирование пользователя</p>
-
-            <form id="edit-user-form">
-                <input type="hidden" id="edit-user-id" name="user_id">
-
-                <label>Логин: <input type="text" id="edit-username" name="username"></label><br>
-                <label>Новый пароль: <input type="password" id="edit-password" name="password"></label><br>
-
-                <button type="button" onclick="sendUser()">Сохранить</button>
-                <button type="button" onclick="hideModal()">Отмена</button>
-            </form>
-        </div>
-    </div>
-    <a href="/rgz/dashboard">Назад</a>
-{% endblock %}
-
 {% block script %}
     <style>
         .modal {
@@ -72,65 +34,61 @@
     </style>
 
     <script>
-        function showModal() {
-            document.getElementById('edit-user-modal').style.display = 'block';
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('edit-user-modal');
+            modal.style.display = 'block';
+        });
 
         function hideModal() {
             document.getElementById('edit-user-modal').style.display = 'none';
         }
-
-        function sendUser() {
-            const id = document.getElementById('edit-user-id').value;
-            const username = document.getElementById('edit-username').value;
-            const password = document.getElementById('edit-password').value;
-
-            const user = {
-                username: username,
-                password: password
-            };
-
-            fetch(`/rgz/admin/edit_user/${id}`, {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user)
-            })
-            .then(function(resp) {
-                if (resp.ok) {
-                    hideModal();
-                    return{}
-                }
-                return resp.json();
-            })
-        }
-
-        function initEditButtons() {
-            const editButtons = document.querySelectorAll('.edit-user-btn');
-        
-            editButtons.forEach(function(button) {
-
-                button.addEventListener('click', function() {
-                    const userId = button.getAttribute('data-user-id');
-                    editUser(userId);
-                });
-            });
-        }
-
-        function editUser(id) {
-            fetch(`/rgz/admin/edit_user/${id}`)
-            .then(function(data) {
-                return data.json();
-            })
-            .then(function(user) {
-                document.getElementById('edit-user-id').value = user.id;
-                document.getElementById('edit-username').value = user.username;
-                document.getElementById('edit-password').value = '';
-                showModal();
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initEditButtons();
-        });
     </script>
+{% endblock %}
+
+{% block main %}
+    <h1>Панель администратора</h1>
+    <h2>Управление списком пользователей:</h2>
+    <table>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>
+                <form action="/rgz/admin" method="post" style="display:inline;">
+
+                    <input type="hidden" name="edit_user_id" value="{{ user.id }}">
+
+                    <button type="submit">Редактировать</button>
+                </form>
+                
+                <form action="/rgz/admin/delete_user/{{ user.id }}" method="post" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if edit_user %}
+    <div id="edit-user-modal" class="modal">
+        <div>
+            <span class="close" onclick="hideModal()"></span>
+            <p>Редактирование пользователя</p>
+            
+            <form action="/rgz/admin/edit_user/{{ edit_user.id }}" method="post">
+                <input type="hidden" value="{{ edit_user.id }}">
+
+                <label>Логин: <input type="text" name="username" value="{{ edit_user.username }}"></label><br>
+                <label>Пароль: <input type="password" name="password"></label><br>
+
+                {% if error %}
+                <div class="error">{{ error }}</div>
+                {% endif %}
+
+                <button type="submit">Сохранить</button>
+                <button type="button" onclick="hideModal()">Отмена</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <a href="/rgz/dashboard">Назад</a>
 {% endblock %}
